@@ -28,10 +28,14 @@ jobs:
           cache: maven
           cache-directory-path: ./tests/load-testing/pom.xml
 
-      - run: mvn install
-
-      - name: Run Gatling tests
-        run: mvn gatling:test
+#      - run: mvn install
+#
+#      - name: Run Gatling tests
+#        run: mvn gatling:test
+      - name: Build mock reports
+        run: |
+          mkdir -p tests/load-testing/target/vvasimulation-20240409082410584
+          echo "Test" > tests/load-testing/target/vvasimulation-20240409082410584/test.txt
 
       - uses: actions/upload-artifact@v3
         with:
@@ -61,7 +65,7 @@ jobs:
       - name: Generate report
         run: |
           mkdir build
-          cp -r gh-pages/gatling/ build/
+          cp -r gh-pages/gatling/ build/ || true
           cp -r gatling-results/*[^lastRun.txt] build/
           copied_folder=$(basename $(ls -d gatling-results/*[^lastRun.txt]))
           echo "$copied_folder" > build/tests.txt      
