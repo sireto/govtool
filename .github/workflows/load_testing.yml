@@ -34,8 +34,8 @@ jobs:
 #        run: mvn gatling:test
       - name: Build mock reports
         run: |
-          mkdir -p tests/load-testing/target/vvasimulation-20240409082410584
-          echo "Test" > tests/load-testing/target/vvasimulation-20240409082410584/test.txt
+          mkdir -p target/vvasimulation-20240409082410584
+          echo "Test" > target/vvasimulation-20240409082410584/test.txt
 
       - uses: actions/upload-artifact@v3
         with:
