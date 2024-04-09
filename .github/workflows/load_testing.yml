@@ -52,9 +52,6 @@ jobs:
       - name: Get Gatling history
         uses: actions/checkout@v4
         continue-on-error: true
-        run: |
-          mkdir build
-          cp -r gh-pages/gatling/ build/
         with:
           ref: gh-pages
           path: gh-pages
@@ -63,6 +60,8 @@ jobs:
 
       - name: Generate report
         run: |
+          mkdir build
+          cp -r gh-pages/gatling/ build/
           cp -r gatling-results/*[^lastRun.txt] build/
           copied_folder=$(basename $(ls -d gatling-results/*[^lastRun.txt]))
           echo "$copied_folder" > build/tests.txt      
