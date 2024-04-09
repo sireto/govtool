@@ -1,0 +1,32 @@
+name: Gatling Load Testing
+
+on:
+  push:
+    branches: [ feat/load-testing ]
+
+jobs:
+  run-tests:
+    runs-on: ubuntu-latest
+    env:
+      API_URL: ${{vars.API_URL}}
+      TARGET_USER_RATE: ${{vars.TARGET_USER_RATE}}
+      RAMP_DURATION: ${{vars.RAMP_DURATION}}
+      PEAK_USERS: ${{vars.PEAK_USERS}}
+      STRESS_DURATION: ${{vars.STRESS_DURATION}}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Java and Maven
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
+
+      - run: mvn install
+
+      - name: Run Gatling tests
+        run: mvn gatling:test
+
+      - run: ls
