@@ -7,6 +7,9 @@ on:
 jobs:
   run-tests:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: tests/load-testing
     env:
       API_URL: ${{vars.API_URL}}
       TARGET_USER_RATE: ${{vars.TARGET_USER_RATE}}
@@ -23,6 +26,7 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
           cache: maven
+          cache-directory-path: ./tests/load-testing/pom.xml
 
       - run: mvn install
 
