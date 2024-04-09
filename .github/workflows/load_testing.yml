@@ -33,4 +33,45 @@ jobs:
       - name: Run Gatling tests
         run: mvn gatling:test
 
-      - run: ls
+      - uses: actions/upload-artifact@v3
+        with:
+          name: gatling-results
+          path: tests/load-testing/target
+
+  publish:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v3
+        with:
+          name: gatling-results
+          path: gatling-results
+
+      - name: Get Gatling history
+        uses: actions/checkout@v4
+        continue-on-error: true
+        run: |
+          mkdir build
+          cp -r gh-pages/gatling/ build/
+        with:
+          ref: gh-pages
+          path: gh-pages
+          repository: NabinKawan/allure-report
+          token: ${{ secrets.PERSONAL_TOKEN }}
+
+      - name: Generate report
+        run: |
+          cp -r gatling-results/*[^lastRun.txt] build/
+          copied_folder=$(basename $(ls -d gatling-results/*[^lastRun.txt]))
+          echo "$copied_folder" > build/tests.txt      
+
+      - name: Deploy report to Github Pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          token: ${{ secrets.PERSONAL_TOKEN }}
+          repository-name: NabinKawan/allure-report
+          branch: gh-pages
+          folder: build
+          target-folder: gatling
