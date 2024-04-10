@@ -18,15 +18,31 @@ jobs:
       NODE_OPTIONS: --max_old_space_size=4096
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-node@v3
         with:
           node-version: 16
+          cache: "npm"
+          cache-dependency-path: "./govtool/frontend/package-lock.json"
+
       - name: Install dependencies
         run: npm install
+
+      - name: Cache Playwright browsers
+        id: cache-playwright-browsers
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-browsers
+
       - name: Install Playwright
+        if: steps.cache-playwright-browsers.outputs.cache-hit != 'true'
         run: npx playwright install --with-deps
+
       - name: Build Storybook
         run: NODE_OPTIONS="--max-old-space-size=8046" npm run build-storybook --quiet
+
       - name: Serve Storybook and run tests
         run: |
           npx concurrently -k -s first -n "SB,TEST" -c "magenta,blue" \
