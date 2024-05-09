@@ -1,6 +1,6 @@
 ---
 - name: Copy files and execute build-and-deploy.sh
-  hosts: servers
+  hosts: test_server
   gather_facts: no
   tasks:
     - name: Copy files to the server
