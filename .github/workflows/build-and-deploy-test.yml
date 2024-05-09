@@ -44,4 +44,4 @@ jobs:
           SERVER_IP_ADDRESS: ${{ secrets.TEST_STACK_SERVER_IP }}
         working-directory: ./tests/test-infrastructure
         run: |
-          ansible-playbook -i inventory.ini  playbook.yml
+          ansible-playbook -i ${SERVER_IP_ADDRESS} -e "ansible_user=ec2-user" playbook.yml
