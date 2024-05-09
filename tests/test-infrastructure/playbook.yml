@@ -1,8 +1,14 @@
 ---
-- name: Copy files and execute build-and-deploy.sh
+- name: Update deployed images.
   hosts: test_server
   gather_facts: no
   tasks:
+    - name: Create /opt/govtool directory if it does not exist
+      ansible.builtin.file:
+        path: /opt/govtool
+        state: directory
+      become: yes
+
     - name: Copy files to the server
       ansible.builtin.copy:
         src: "{{ item }}"
@@ -22,6 +28,7 @@
         - scripts/
         - secrets_template/
       become: yes
+
     - name: Execute build-and-deploy.sh
       ansible.builtin.shell: "/opt/govtool/build-and-deploy.sh update-images"
       args:
