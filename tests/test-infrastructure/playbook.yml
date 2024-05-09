@@ -33,4 +33,6 @@
       ansible.builtin.shell: "/opt/govtool/build-and-deploy.sh update-images"
       args:
         chdir: "/opt/govtool"
+      environment:
+        GOVTOOL_TAG: "{{ lookup('env', 'GOVTOOL_TAG') }}"
       become: yes

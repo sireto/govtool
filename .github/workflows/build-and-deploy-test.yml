@@ -45,3 +45,5 @@ jobs:
             ${{ secrets.TEST_STACK_SERVER_IP }} ansible_user=ec2-user
           options: |
             --verbose
+        env:
+          GOVTOOL_TAG: ${{ github.sha }}
