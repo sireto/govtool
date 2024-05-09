@@ -27,6 +27,7 @@
         - gen-configs.sh
         - scripts/
         - secrets_template/
+        - .env.example
       become: yes
 
     - name: Execute build-and-deploy.sh
