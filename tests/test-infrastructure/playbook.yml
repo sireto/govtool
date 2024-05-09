@@ -1,0 +1,29 @@
+---
+- name: Copy files and execute build-and-deploy.sh
+  hosts: servers
+  gather_facts: no
+  tasks:
+    - name: Copy files to the server
+      ansible.builtin.copy:
+        src: "{{ item }}"
+        dest: "/opt/govtool/{{ item }}"
+        mode: '0755'
+      with_items:
+        - build-and-deploy.sh
+        - build-images.sh
+        - configs_template/
+        - deploy.sh
+        - docker-compose-basic-services.yml
+        - docker-compose-cardano.yml
+        - docker-compose-govaction-loader.yml
+        - docker-compose-govtool.yml
+        - docker-compose-test.yml
+        - gen-configs.sh
+        - scripts/
+        - secrets_template/
+      become: yes
+    - name: Execute build-and-deploy.sh
+      ansible.builtin.shell: "/opt/govtool/build-and-deploy.sh update-images"
+      args:
+        chdir: "/opt/govtool"
+      become: yes
