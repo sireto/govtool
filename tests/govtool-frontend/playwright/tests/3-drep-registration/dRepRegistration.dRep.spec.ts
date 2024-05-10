@@ -58,7 +58,7 @@ test.describe("Temporary DReps", () => {
 
     const dRepRegistrationPage = new DRepRegistrationPage(dRepPage);
     await dRepRegistrationPage.goto();
-    await dRepRegistrationPage.register({ name: "Test_dRep" });
+    await dRepRegistrationPage.register();
 
     await expect(dRepRegistrationPage.registrationSuccessModal).toBeVisible();
     await expect(
@@ -134,5 +134,38 @@ test.describe("Temporary DReps", () => {
     const govActionDetailsPage =
       await governanceActionsPage.viewFirstProposal();
     await expect(govActionDetailsPage.voteBtn).not.toBeVisible();
+  });
+
+  test("3K. Should display 'In Progress' status on dashboard until blockchain confirms DRep registration", async ({
+    page,
+    browser,
+  }, testInfo) => {
+    test.setTimeout(testInfo.timeout + environments.txTimeOut);
+
+    const wallet = await ShelleyWallet.generate();
+
+    const res = await kuberService.transferADA(
+      [wallet.addressBech32(environments.networkId)],
+      600
+    );
+    await pollTransaction(res.txId, res.lockInfo);
+
+    const dRepAuth = await createTempDRepAuth(page, wallet);
+    const dRepPage = await createNewPageWithWallet(browser, {
+      storageState: dRepAuth,
+      wallet,
+      enableStakeSigning: true,
+    });
+
+    const dRepRegistrationPage = new DRepRegistrationPage(dRepPage);
+    await dRepRegistrationPage.goto();
+    await dRepRegistrationPage.register();
+    dRepRegistrationPage.registrationSuccessModal
+      .getByTestId("confirm-modal-button")
+      .click();
+
+    await expect(
+      dRepPage.locator("span").filter({ hasText: "In Progress" })
+    ).toBeVisible(); // BUG add proper testId for dRep registration card
   });
 });
