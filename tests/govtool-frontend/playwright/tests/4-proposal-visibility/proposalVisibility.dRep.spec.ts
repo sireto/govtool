@@ -15,10 +15,9 @@ test("4E. Should display DRep's voting power in governance actions page", async 
   await governanceActionsPage.goto();
 
   const res = await votingPowerPromise;
-  const votingPowerLovelace = await res.json();
-  const votingPowerAda = votingPowerLovelace / 1000000;
+  const votingPower = await res.json();
 
-  await expect(page.getByText(`₳ ${votingPowerAda}`)).toBeVisible();
+  await expect(page.getByText(`₳ ${lovelaceToAda(votingPower)}`)).toBeVisible();
 });
 
 test("4F. Should Disable DRep functionality upon wallet disconnection on governance page", async ({
