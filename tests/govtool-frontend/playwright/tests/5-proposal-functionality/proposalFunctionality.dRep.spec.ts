@@ -180,3 +180,47 @@ test.describe("Perform voting", () => {
     ).toBeVisible();
   });
 });
+
+test.describe("Check voting power", () => {
+  test("5K. Should return deposit on DRep retirement", async ({
+    page,
+    browser,
+  }, testInfo) => {
+    test.setTimeout(testInfo.timeout + 2 * environments.txTimeOut);
+
+    const wallet = await ShelleyWallet.generate();
+    const registrationRes = await kuberService.dRepRegistration(
+      convertBufferToHex(wallet.stakeKey.private),
+      convertBufferToHex(wallet.stakeKey.pkh)
+    );
+    await pollTransaction(registrationRes.txId, registrationRes.lockInfo);
+
+    const res = await kuberService.transferADA(
+      [wallet.addressBech32(environments.networkId)],
+      40
+    );
+    await pollTransaction(res.txId, registrationRes.lockInfo);
+
+    const tempDRepAuth = await createTempDRepAuth(page, wallet);
+
+    const dRepPage = await createNewPageWithWallet(browser, {
+      storageState: tempDRepAuth,
+      wallet,
+      enableStakeSigning: true,
+    });
+
+    await dRepPage.goto("/");
+    await dRepPage.getByTestId("retire-button").click();
+    await dRepPage.getByTestId("retire-button").click(); // BUG: testId -> continue-retire-button
+    await expect(
+      dRepPage.getByTestId("retirement-transaction-submitted-modal")
+    ).toBeVisible();
+    dRepPage.getByTestId("confirm-modal-button").click();
+    await waitForTxConfirmation(dRepPage);
+
+    const balance = await kuberService.getBalance(
+      wallet.addressBech32(environments.networkId)
+    );
+    expect(balance, "Retirement deposit not returned").toBeGreaterThan(500);
+  });
+});
