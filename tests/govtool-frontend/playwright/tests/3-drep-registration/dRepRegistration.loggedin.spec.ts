@@ -21,9 +21,7 @@ test("3B. Should access DRep registration page", async ({ page }) => {
   await expect(page.getByText("Become a DRep")).toBeVisible();
 });
 
-test("3D.Verify DRep registration functionality with Wallet Connected State State", async ({
-  page,
-}) => {
+test("3D. Verify DRep registration form", async ({ page }) => {
   const dRepRegistrationPage = new DRepRegistrationPage(page);
   await dRepRegistrationPage.goto();
 
