@@ -108,17 +108,17 @@ export default class GovernanceActionsPage {
     expect(proposalData.length, "No proposals to sort").toBeGreaterThan(0);
 
     // API validation
-    proposalData.forEach(async (proposal) => {
-      if (proposal.elements.length <= 1) return;
+    for (const proposal of proposalData) {
+      if (proposal.elements.length <= 1) continue;
 
       const proposals = proposal.elements as IProposal[];
       for (let i = 0; i <= proposals.length - 2; i++) {
         const isValid = validationFn(proposals[i], proposals[i + 1]);
         expect(isValid, "API Sorting validation failed").toBe(true);
       }
-    });
+    }
 
-    // Frontend validation
+      // Frontend validation
     const proposalCards = await Promise.all(
       filterKeys.map((key) =>
         this.page.getByTestId(`govaction-${key}-card`).allInnerTexts(),
