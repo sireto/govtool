@@ -1,11 +1,13 @@
 import { dRep01Wallet } from "@constants/staticWallets";
+import { setAllureEpic } from "@helpers/allure";
 import DRepDirectoryPage from "@pages/dRepDirectoryPage";
 import { expect, test } from "@playwright/test";
 import { DRepStatus } from "@types";
 
-test("2C. Should open wallet connection popup on delegate in disconnected state", async ({
-  page,
-}) => {
+test.beforeEach(async () => {
+  await setAllureEpic("2. Delegation");
+});
+test("2C. Verify DRep Behavior in Disconnected State", async ({ page }) => {
   await page.goto("/");
 
   await page.getByTestId("view-drep-directory-button").click();

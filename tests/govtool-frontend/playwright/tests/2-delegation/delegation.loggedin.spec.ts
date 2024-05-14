@@ -1,5 +1,6 @@
 import { dRep01Wallet, user01Wallet } from "@constants/staticWallets";
 import { test } from "@fixtures/walletExtension";
+import { setAllureEpic } from "@helpers/allure";
 import { ShelleyWallet } from "@helpers/crypto";
 import { isMobile } from "@helpers/mobile";
 import extractDRepFromWallet from "@helpers/shellyWallet";
@@ -8,7 +9,11 @@ import { expect } from "@playwright/test";
 
 test.use({ storageState: ".auth/user01.json", wallet: user01Wallet });
 
-test("2B. Should access DRep Directory page", async ({ page }) => {
+test.beforeEach(async () => {
+  await setAllureEpic("2. Delegation");
+});
+
+test("2B. Should access delegation to dRep page", async ({ page }) => {
   await page.goto("/");
 
   await page.getByTestId("view-drep-directory-button").click();
@@ -38,7 +43,9 @@ test("2I. Should check validity of DRep Id", async ({ page }) => {
   await expect(dRepDirectory.getDRepCard(invalidDRepId)).not.toBeVisible();
 });
 
-test("2D. Should show delegation options in connected state", async ({ page }) => {
+test("2D. Should show delegation options in connected state", async ({
+  page,
+}) => {
   const dRepDirectoryPage = new DRepDirectoryPage(page);
   await dRepDirectoryPage.goto();
 

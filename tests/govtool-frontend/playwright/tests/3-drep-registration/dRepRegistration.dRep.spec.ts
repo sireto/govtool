@@ -3,6 +3,7 @@ import { dRep01Wallet } from "@constants/staticWallets";
 import { createTempDRepAuth } from "@datafactory/createAuth";
 import { faker } from "@faker-js/faker";
 import { test } from "@fixtures/walletExtension";
+import { setAllureEpic } from "@helpers/allure";
 import convertBufferToHex from "@helpers/convertBufferToHex";
 import { ShelleyWallet } from "@helpers/crypto";
 import { createNewPageWithWallet } from "@helpers/page";
@@ -12,6 +13,10 @@ import GovernanceActionsPage from "@pages/governanceActionsPage";
 import { expect } from "@playwright/test";
 import kuberService from "@services/kuberService";
 import * as crypto from "crypto";
+
+test.beforeEach(async () => {
+  await setAllureEpic("3. DRep registration");
+});
 
 test.describe("Logged in DReps", () => {
   test.use({ storageState: ".auth/dRep01.json", wallet: dRep01Wallet });
@@ -28,7 +33,8 @@ test.describe("Logged in DReps", () => {
   test.use({ storageState: ".auth/dRep01.json", wallet: dRep01Wallet });
 
   // Skipped: No option to update metadata
-  test.skip("3H. Should be able to update metadata @slow", async ({ page }) => {
+  test("3H. Should be able to update metadata ", async ({ page }) => {
+    test.skip();
     page.getByTestId("change-metadata-button").click();
     page.getByTestId("url-input").fill("https://google.com");
     page.getByTestId("hash-input").fill(crypto.randomBytes(32).toString("hex"));
@@ -37,7 +43,7 @@ test.describe("Logged in DReps", () => {
 });
 
 test.describe("Temporary DReps", () => {
-  test("3G. Should show confirmation message with link to view transaction, when DRep registration txn is submitted @slow ", async ({
+  test("3G. Should show confirmation message with link to view transaction, when DRep registration txn is submitted  ", async ({
     page,
     browser,
   }, testInfo) => {
@@ -67,7 +73,7 @@ test.describe("Temporary DReps", () => {
     ).toBeVisible();
   });
 
-  test("3I. Should verify retire as DRep @slow", async ({
+  test("3I. Should verify retire as DRep ", async ({
     page,
     browser,
   }, testInfo) => {
