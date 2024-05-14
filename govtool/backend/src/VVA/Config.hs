@@ -64,7 +64,7 @@ data DBConfig
   deriving (FromConfig, Generic, Show)
 
 instance DefaultConfig DBConfig where
-  configDef = DBConfig "localhost" "cexplorer" "postgres" "test" 9903
+ configDef = DBConfig "172.31.0.7" "dbsync_sanchonet" "postgres" "6pYx*U#bv!aCrU4aCaajS9^V^z" 8432
 
 -- | Internal, backend-dependent representation of configuration for DEX.  This
 -- data type should not be exported from this module.
@@ -91,12 +91,12 @@ instance DefaultConfig VVAConfigInternal where
   configDef =
     VVAConfigInternal
       { vVAConfigInternalDbsyncconfig = configDef,
-        vVAConfigInternalPort = 3000,
-        vVAConfigInternalHost = "localhost",
+        vVAConfigInternalPort = 9999,
+        vVAConfigInternalHost = "0.0.0.0",
         vVaConfigInternalCacheDurationSeconds = 20,
         vVAConfigInternalSentrydsn = "https://username:password@senty.host/id",
-        vVAConfigInternalMetadataValidationHost = "localhost",
-        vVAConfigInternalMetadataValidationPort = 3001
+        vVAConfigInternalMetadataValidationHost = "0.0.0.0",
+        vVAConfigInternalMetadataValidationPort = 3000
       }
 
 -- | DEX configuration.

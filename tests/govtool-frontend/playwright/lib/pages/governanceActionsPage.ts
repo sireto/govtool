@@ -119,7 +119,6 @@ export default class GovernanceActionsPage {
       }
     }
 
-    await this.page.waitForTimeout(2000);
     // Frontend validation
     const proposalCards = await Promise.all(
       filterKeys.map((key) =>

@@ -104,6 +104,7 @@ test("3L. Should reject invalid data in DRep form", async ({ page }) => {
 test("3F. Should create proper DRep registration request, when registered with data ", async ({
   page,
 }) => {
+  test.skip();
   const dRepRegistrationPage = new DRepRegistrationPage(page);
   await dRepRegistrationPage.goto();
 

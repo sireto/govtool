@@ -59,7 +59,7 @@ export default defineConfig({
       testMatch: "**/auth.setup.ts",
     },
     {
-      name: "dRep setup",
+      name: "DRep setup",
       testMatch: "**/dRep.setup.ts",
       dependencies: ["faucet setup"],
     },
@@ -68,12 +68,12 @@ export default defineConfig({
       testMatch: "**/wallet.bootstrap.ts",
       dependencies: ["faucet setup"],
     },
-    // {
-    //   name: "transaction",
-    //   use: { ...devices["Desktop Chrome"] },
-    //   testMatch: "**/*.tx.spec.ts",
-    //   dependencies: process.env.CI ? ["auth setup", "wallet bootstrap"] : [],
-    // },
+    {
+      name: "transaction",
+      use: { ...devices["Desktop Chrome"] },
+      testMatch: "**/*.tx.spec.ts",
+      dependencies: process.env.CI ? ["auth setup", "wallet bootstrap"] : [],
+    },
     {
       name: "loggedin (desktop)",
       use: { ...devices["Desktop Chrome"] },
@@ -90,14 +90,14 @@ export default defineConfig({
       name: "dRep",
       use: { ...devices["Desktop Chrome"] },
       testMatch: "**/*.dRep.spec.ts",
-      dependencies: process.env.CI ? ["auth setup", "dRep setup"] : [],
+      dependencies: process.env.CI ? ["auth setup", "DRep setup"] : [],
     },
     {
       name: "delegation",
       use: { ...devices["Desktop Chrome"] },
       testMatch: "**/*.delegation.spec.ts",
       dependencies: process.env.CI
-        ? ["auth setup", "dRep setup", "wallet bootstrap"]
+        ? ["auth setup", "DRep setup", "wallet bootstrap"]
         : [],
       teardown: process.env.CI && "cleanup delegation",
     },
@@ -117,11 +117,12 @@ export default defineConfig({
         "**/*.loggedin.spec.ts",
         "**/*.dRep.spec.ts",
         "**/*.delegation.spec.ts",
+        "**/*.tx.spec.ts",
       ],
     },
     {
       name: "cleanup delegation",
-      testMatch: "delegation.teardown.ts",
+      testMatch: ["delegation.teardown.ts"],
     },
   ],
 });

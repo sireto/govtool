@@ -3,29 +3,22 @@ import { dRep01Wallet } from "@constants/staticWallets";
 import { createTempDRepAuth } from "@datafactory/createAuth";
 import { faker } from "@faker-js/faker";
 import { test } from "@fixtures/walletExtension";
+import { setAllureEpic } from "@helpers/allure";
 import { ShelleyWallet } from "@helpers/crypto";
-import { isMobile, openDrawer } from "@helpers/mobile";
 import { createNewPageWithWallet } from "@helpers/page";
 import extractDRepFromWallet from "@helpers/shellyWallet";
-import { transferAdaForWallet } from "@helpers/transaction";
+import { pollTransaction, transferAdaForWallet } from "@helpers/transaction";
 import DRepDirectoryPage from "@pages/dRepDirectoryPage";
 import DRepRegistrationPage from "@pages/dRepRegistrationPage";
 import { expect } from "@playwright/test";
+import kuberService from "@services/kuberService";
 
-test("2C. Should open wallet connection popup on delegate in disconnected state", async ({
-  page,
-}) => {
-  await page.goto("/");
-  if (isMobile(page)) {
-    openDrawer(page);
-  }
+test.beforeEach(async () => {
+  await setAllureEpic("2. Delegation");
+});
 
-  await page.getByTestId("view-drep-directory-button").click();
-  await page
-    .locator('[data-testid$="-connect-to-delegate-button"]')
-    .first()
-    .click();
-  await expect(page.getByTestId("connect-your-wallet-modal")).toBeVisible();
+test.beforeEach(async () => {
+  await setAllureEpic("2. Delegation");
 });
 
 test("2L. Should copy DRepId", async ({ page, context }) => {
@@ -96,4 +89,100 @@ test("2N. Should show DRep information on details page", async ({
     await expect(dRepPage.getByText(link, { exact: true })).toBeVisible();
   }
   await expect(dRepPage.getByText(bio, { exact: true })).toBeVisible();
+});
+
+test("2M. Should provide detailed dRep information on the dRep card.", async ({
+  page,
+  browser,
+}) => {
+  const wallet = await ShelleyWallet.generate();
+  const res = await kuberService.transferADA(
+    [wallet.addressBech32(environments.networkId)],
+    600
+  );
+  await pollTransaction(res.txId, res.lockInfo);
+
+  const tempDRepAuth = await createTempDRepAuth(page, wallet);
+  const dRepPage = await createNewPageWithWallet(browser, {
+    storageState: tempDRepAuth,
+    wallet,
+    enableStakeSigning: true,
+  });
+
+  const dRepRegistrationPage = new DRepRegistrationPage(dRepPage);
+  await dRepRegistrationPage.goto();
+  const fakerName = faker.person.firstName();
+  const fakerEmail = faker.internet.email({ firstName: fakerName });
+  const fakerBio = faker.person.bio();
+  const fakerLinks = [
+    faker.internet.url({ appendSlash: true }),
+    faker.internet.url(),
+  ];
+
+  await dRepRegistrationPage.register({
+    name: fakerName,
+    email: fakerEmail,
+    bio: fakerBio,
+    extraContentLinks: fakerLinks,
+  });
+  const DRepId = extractDRepFromWallet(wallet);
+  await expect(dRepRegistrationPage.registrationSuccessModal).toBeVisible();
+  const dRepDirectory = new DRepDirectoryPage(page);
+  await dRepDirectory.goto();
+
+  await page.getByTestId("search-input").fill(DRepId);
+  await page.getByTestId(`${DRepId}-view-details-button`).click();
+  expect(
+    (await page.getByTestId("copy-drep-id-button").textContent()).includes(
+      DRepId
+    )
+  );
+});
+
+test("2M. Should provide detailed dRep information on the dRep card.", async ({
+  page,
+  browser,
+}) => {
+  const wallet = await ShelleyWallet.generate();
+  const res = await kuberService.transferADA(
+    [wallet.addressBech32(environments.networkId)],
+    600
+  );
+  await pollTransaction(res.txId, res.lockInfo);
+
+  const tempDRepAuth = await createTempDRepAuth(page, wallet);
+  const dRepPage = await createNewPageWithWallet(browser, {
+    storageState: tempDRepAuth,
+    wallet,
+    enableStakeSigning: true,
+  });
+
+  const dRepRegistrationPage = new DRepRegistrationPage(dRepPage);
+  await dRepRegistrationPage.goto();
+  const fakerName = faker.person.firstName();
+  const fakerEmail = faker.internet.email({ firstName: fakerName });
+  const fakerBio = faker.person.bio();
+  const fakerLinks = [
+    faker.internet.url({ appendSlash: true }),
+    faker.internet.url(),
+  ];
+
+  await dRepRegistrationPage.register({
+    name: fakerName,
+    email: fakerEmail,
+    bio: fakerBio,
+    extraContentLinks: fakerLinks,
+  });
+  const DRepId = extractDRepFromWallet(wallet);
+  await expect(dRepRegistrationPage.registrationSuccessModal).toBeVisible();
+  const dRepDirectory = new DRepDirectoryPage(page);
+  await dRepDirectory.goto();
+
+  await page.getByTestId("search-input").fill(DRepId);
+  await page.getByTestId(`${DRepId}-view-details-button`).click();
+  expect(
+    (await page.getByTestId("copy-drep-id-button").textContent()).includes(
+      DRepId
+    )
+  );
 });

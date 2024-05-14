@@ -60,9 +60,6 @@ export default class DRepRegistrationPage {
     await this.page.getByRole("checkbox").click();
     await this.continueBtn.click();
 
-    await this.continueBtn.click();
-    await this.page.getByRole("checkbox").click();
-    await this.continueBtn.click();
     this.page.getByRole("button", { name: `${dRepInfo.name}.jsonld` }).click(); // BUG test id = metadata-download-button
     const dRepMetadata = await this.downloadVoteMetadata();
     const url = await metadataBucketService.uploadMetadata(

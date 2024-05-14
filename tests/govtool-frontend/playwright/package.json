@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "license": "MIT",
   "devDependencies": {
-    "@playwright/test": "^1.41.2",
+    "@playwright/test": "^1.44.0",
     "@types/node": "^20.11.17",
     "@types/node-fetch": "^2.6.11",
     "allure-commandline": "^2.27.0",
