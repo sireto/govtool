@@ -1,11 +1,8 @@
 import environments from "@constants/environments";
-import {
-  adaHolder01Wallet,
-  adaHolder02Wallet,
-  dRep01Wallet,
-} from "@constants/staticWallets";
+import { adaHolder01Wallet, dRep01Wallet } from "@constants/staticWallets";
 import { createTempDRepAuth } from "@datafactory/createAuth";
 import { test } from "@fixtures/walletExtension";
+import { setAllureEpic } from "@helpers/allure";
 import { ShelleyWallet } from "@helpers/crypto";
 import { createNewPageWithWallet } from "@helpers/page";
 import { pollTransaction, waitForTxConfirmation } from "@helpers/transaction";
@@ -13,13 +10,17 @@ import DelegationPage from "@pages/delegationPage";
 import { expect } from "@playwright/test";
 import kuberService from "@services/kuberService";
 
+test.beforeEach(async () => {
+  await setAllureEpic("2. Delegation");
+});
+
 test.describe("Delegate to others", () => {
   test.use({
     storageState: ".auth/adaHolder01.json",
     wallet: adaHolder01Wallet,
   });
 
-  test("2A. Should show delegated DRep Id on dashboard after delegation @slow @critical", async ({
+  test("2A. Should show delegated DRep Id on dashboard after delegation", async ({
     page,
   }, testInfo) => {
     test.setTimeout(testInfo.timeout + 2 * environments.txTimeOut);
@@ -38,7 +39,7 @@ test.describe("Delegate to others", () => {
 });
 
 test.describe("Delegate to myself", () => {
-  test("2E. Should register as SoleVoter  @slow @critical", async ({
+  test("2E. Should register as SoleVoter ", async ({
     page,
     browser,
   }, testInfo) => {
@@ -70,15 +71,14 @@ test.describe("Delegate to myself", () => {
 });
 
 test.describe("Change Delegation", () => {
-  test.use({
-    storageState: ".auth/adaHolder02.json",
-    wallet: adaHolder02Wallet,
-  });
+  // test.use({
+  //   storageState: ".auth/adaHolder02.json",
+  //   wallet: adaHolder02Wallet,
+  // });
 
   // Skipped: Blocked because delegation is not working
-  test.skip("2F. Should change delegated dRep @slow @critical", async ({
-    page,
-  }) => {
+  test("2F. Should change delegated dRep", async ({ page }) => {
+    test.skip();
     const delegationPage = new DelegationPage(page);
     await delegationPage.goto();
     delegationPage.delegateToDRep(dRep01Wallet.dRepId);

@@ -1,6 +1,7 @@
 import { user01Wallet } from "@constants/staticWallets";
 import { faker } from "@faker-js/faker";
 import { test } from "@fixtures/walletExtension";
+import { setAllureEpic } from "@helpers/allure";
 import DRepRegistrationPage from "@pages/dRepRegistrationPage";
 import { expect } from "@playwright/test";
 
@@ -9,16 +10,18 @@ test.use({
   wallet: user01Wallet,
 });
 
-test("3B. Should access DRep registration page @fast @smoke", async ({
-  page,
-}) => {
+test.beforeEach(async () => {
+  await setAllureEpic("3. DRep registration");
+});
+
+test("3B. Should access DRep registration page", async ({ page }) => {
   await page.goto("/");
 
   await page.getByTestId("register-button").click();
   await expect(page.getByText("Become a DRep")).toBeVisible();
 });
 
-test("3D.Verify DRep registration functionality with Wallet Connected State State @fast @smoke", async ({
+test("3D.Verify DRep registration functionality with Wallet Connected State State", async ({
   page,
 }) => {
   const dRepRegistrationPage = new DRepRegistrationPage(page);
@@ -33,9 +36,10 @@ test("3D.Verify DRep registration functionality with Wallet Connected State Stat
 });
 
 // Skipped: Because there are no fields for url and hash inputs.
-test.skip("3E. Should reject invalid data and accept valid data @smoke @fast", async ({
+test("3E. Should reject invalid data and accept valid data", async ({
   page,
 }) => {
+  test.skip();
   const dRepRegistrationPage = new DRepRegistrationPage(page);
   await dRepRegistrationPage.goto();
 
@@ -50,7 +54,7 @@ test.skip("3E. Should reject invalid data and accept valid data @smoke @fast", a
   // Validity test
 });
 
-test("3F. Should create proper DRep registration request, when registered with data @slow", async ({
+test("3F. Should create proper DRep registration request, when registered with data ", async ({
   page,
 }) => {
   const urlToIntercept = "**/utxo?**";
