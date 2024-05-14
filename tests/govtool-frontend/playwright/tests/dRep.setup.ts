@@ -11,6 +11,7 @@ setup.beforeEach(async () => {
   await setAllureEpic("Setup");
   await setAllureStory("DRep");
 });
+
 dRepWallets.forEach((wallet) => {
   setup(`Register DRep of wallet: ${wallet.address}`, async () => {
     try {
