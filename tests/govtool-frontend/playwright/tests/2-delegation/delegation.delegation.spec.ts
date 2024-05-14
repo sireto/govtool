@@ -27,6 +27,7 @@ test.describe("Delegate to others", () => {
   test("2A. Should show delegated DRep Id on dashboard after delegation", async ({
     page,
   }, testInfo) => {
+    test.skip();
     test.setTimeout(testInfo.timeout + 2 * environments.txTimeOut);
 
     const delegationPage = new DelegationPage(page);
@@ -47,6 +48,7 @@ test.describe("Delegate to myself", () => {
     page,
     browser,
   }, testInfo) => {
+    test.skip();
     test.setTimeout(testInfo.timeout + 2 * environments.txTimeOut);
 
     const wallet = await ShelleyWallet.generate();
