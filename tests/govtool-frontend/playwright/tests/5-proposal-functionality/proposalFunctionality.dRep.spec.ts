@@ -2,7 +2,7 @@ import environments from "@constants/environments";
 import { dRep01Wallet } from "@constants/staticWallets";
 import { createTempDRepAuth } from "@datafactory/createAuth";
 import { test } from "@fixtures/walletExtension";
-import { setAllureSuitsAndFeature } from "@helpers/allure";
+import { setAllureEpic } from "@helpers/allure";
 import convertBufferToHex from "@helpers/convertBufferToHex";
 import { ShelleyWallet } from "@helpers/crypto";
 import { createNewPageWithWallet } from "@helpers/page";
@@ -13,7 +13,7 @@ import { expect } from "@playwright/test";
 import kuberService from "@services/kuberService";
 
 test.beforeEach(async () => {
- await setAllureSuitsAndFeature("5_Proposal_Functionality");
+  await setAllureEpic("5. Proposal functionality");
 });
 test.describe("Proposal checks", () => {
   test.use({ storageState: ".auth/dRep01.json", wallet: dRep01Wallet });

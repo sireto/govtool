@@ -1,7 +1,7 @@
 import { user01Wallet } from "@constants/staticWallets";
 import { faker } from "@faker-js/faker";
 import { test } from "@fixtures/walletExtension";
-import { setAllureSuitsAndFeature } from "@helpers/allure";
+import { setAllureEpic } from "@helpers/allure";
 import DRepRegistrationPage from "@pages/dRepRegistrationPage";
 import { expect } from "@playwright/test";
 
@@ -11,7 +11,7 @@ test.use({
 });
 
 test.beforeEach(async () => {
-  await setAllureSuitsAndFeature("3_Drep_Registration");
+  await setAllureEpic("3. DRep registration");
 });
 
 test("3B. Should access DRep registration page", async ({ page }) => {

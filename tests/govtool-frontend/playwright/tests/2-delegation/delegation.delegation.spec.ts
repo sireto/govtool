@@ -6,7 +6,7 @@ import {
 } from "@constants/staticWallets";
 import { createTempDRepAuth } from "@datafactory/createAuth";
 import { test } from "@fixtures/walletExtension";
-import { setAllureSuitsAndFeature } from "@helpers/allure";
+import { setAllureEpic } from "@helpers/allure";
 import { ShelleyWallet } from "@helpers/crypto";
 import { createNewPageWithWallet } from "@helpers/page";
 import { pollTransaction, waitForTxConfirmation } from "@helpers/transaction";
@@ -15,7 +15,7 @@ import { expect } from "@playwright/test";
 import kuberService from "@services/kuberService";
 
 test.beforeEach(async () => {
-  await setAllureSuitsAndFeature("2_Delegation");
+  await setAllureEpic("2. Delegation");
 });
 
 test.describe("Delegate to others", () => {

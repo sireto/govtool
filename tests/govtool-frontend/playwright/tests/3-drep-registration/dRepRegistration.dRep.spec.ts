@@ -3,7 +3,7 @@ import { dRep01Wallet } from "@constants/staticWallets";
 import { createTempDRepAuth } from "@datafactory/createAuth";
 import { faker } from "@faker-js/faker";
 import { test } from "@fixtures/walletExtension";
-import { setAllureSuitsAndFeature } from "@helpers/allure";
+import { setAllureEpic } from "@helpers/allure";
 import convertBufferToHex from "@helpers/convertBufferToHex";
 import { ShelleyWallet } from "@helpers/crypto";
 import { createNewPageWithWallet } from "@helpers/page";
@@ -15,7 +15,7 @@ import kuberService from "@services/kuberService";
 import * as crypto from "crypto";
 
 test.beforeEach(async () => {
- await setAllureSuitsAndFeature("3_Drep_Registration");
+  await setAllureEpic("3. DRep registration");
 });
 
 test.describe("Logged in DReps", () => {

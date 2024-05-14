@@ -1,13 +1,13 @@
 import { user01Wallet } from "@constants/staticWallets";
 import { test } from "@fixtures/walletExtension";
-import { setAllureSuitsAndFeature } from "@helpers/allure";
+import { setAllureEpic } from "@helpers/allure";
 import DelegationPage from "@pages/delegationPage";
 import { expect } from "@playwright/test";
 
 test.use({ storageState: ".auth/user01.json", wallet: user01Wallet });
 
 test.beforeEach(async () => {
-  await setAllureSuitsAndFeature("2_Delegation");
+  await setAllureEpic("2. Delegation");
 });
 
 test("2B. Should access delegation to dRep page", async ({ page }) => {

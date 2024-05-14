@@ -1,9 +1,9 @@
-import { setAllureSuitsAndFeature } from "@helpers/allure";
+import { setAllureEpic } from "@helpers/allure";
 import GovernanceActionsPage from "@pages/governanceActionsPage";
 import { expect, test } from "@playwright/test";
 
 test.beforeEach(async () => {
- await setAllureSuitsAndFeature("4_Proposal_Visibility");
+  await setAllureEpic("4. Proposal visibility");
 });
 test("4A.2: Should access Governance Actions page without connecting wallet", async ({
   page,

@@ -5,14 +5,15 @@ import { expect, test as setup } from "@playwright/test";
 import kuberService from "@services/kuberService";
 import { Logger } from "../../cypress/lib/logger/logger";
 import fetch = require("node-fetch");
-import { setAllureSuitsAndFeature } from "@helpers/allure";
+import { setAllureStory, setAllureEpic } from "@helpers/allure";
 
 const dRepInfo = require("../lib/_mock/dRepInfo.json");
 
 setup.describe.configure({ timeout: environments.txTimeOut });
 
 setup.beforeEach(async () => {
- await setAllureSuitsAndFeature("Setup");
+  await setAllureEpic("Setup");
+  await setAllureStory("DRep");
 });
 dRepWallets.forEach((wallet) => {
   setup(`Register DRep of wallet: ${wallet.address}`, async () => {

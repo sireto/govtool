@@ -31,12 +31,7 @@ export default defineConfig({
     ? [
         ["line"],
         [
-          "allure-playwright",
-          {
-            detail: true,
-            outputFolder: "allure-results",
-            suiteTitle: false,
-          },
+          "allure-playwright"
         ],
       ]
     : [["line"]],

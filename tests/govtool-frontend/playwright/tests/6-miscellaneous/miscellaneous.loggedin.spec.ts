@@ -1,6 +1,6 @@
 import { user01Wallet } from "@constants/staticWallets";
 import { test } from "@fixtures/walletExtension";
-import { setAllureSuitsAndFeature } from "@helpers/allure";
+import { setAllureEpic } from "@helpers/allure";
 import DRepRegistrationPage from "@pages/dRepRegistrationPage";
 import DelegationPage from "@pages/delegationPage";
 import { expect } from "@playwright/test";
@@ -8,7 +8,7 @@ import { expect } from "@playwright/test";
 test.use({ storageState: ".auth/user01.json", wallet: user01Wallet });
 
 test.beforeEach(async () => {
- await setAllureSuitsAndFeature("6_Miscellaneous");
+  await setAllureEpic("6. Miscellaneous");
 });
 // Skipped: No dRepId to validate
 test("6B. Provides error for invalid format", async ({ page }) => {

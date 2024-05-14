@@ -1,8 +1,8 @@
-import { setAllureSuitsAndFeature } from "@helpers/allure";
+import { setAllureEpic } from "@helpers/allure";
 import { test, expect } from "@playwright/test";
 
 test.beforeEach(async () => {
- await setAllureSuitsAndFeature("3_Drep_Registration");
+  await setAllureEpic("3. DRep registration");
 });
 
 test("3C. Should open wallet connection popup, when Register as DRep from wallet unconnected state", async ({

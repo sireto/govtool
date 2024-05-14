@@ -1,10 +1,10 @@
-import { setAllureSuitsAndFeature } from "@helpers/allure";
+import { setAllureEpic } from "@helpers/allure";
 import { isMobile, openDrawer } from "@helpers/mobile";
 import { expect, test } from "@playwright/test";
 import environments from "lib/constants/environments";
 
 test.beforeEach(async () => {
-  await setAllureSuitsAndFeature("6_Miscellaneous");
+  await setAllureEpic("6. Miscellaneous");
 });
 
 test("6C. Navigation within the dApp", async ({ page, context }) => {

@@ -1,8 +1,8 @@
-import { setAllureSuitsAndFeature } from "@helpers/allure";
+import { setAllureEpic } from "@helpers/allure";
 import { expect, test } from "@playwright/test";
 
 test.beforeEach(async () => {
-  await setAllureSuitsAndFeature("2_Delegation");
+  await setAllureEpic("2. Delegation");
 });
 test("2C. Verify DRep Behavior in Disconnected State", async ({ page }) => {
   await page.goto("/");

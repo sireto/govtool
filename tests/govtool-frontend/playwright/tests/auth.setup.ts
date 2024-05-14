@@ -7,10 +7,7 @@ import {
 } from "@constants/staticWallets";
 import { importWallet } from "@fixtures/importWallet";
 import { test as setup } from "@fixtures/walletExtension";
-import {
-    setAllureSubSuitsAndStory,
-    setAllureSuitsAndFeature,
-} from "@helpers/allure";
+import { setAllureStory, setAllureEpic } from "@helpers/allure";
 import LoginPage from "@pages/loginPage";
 
 const dRep01AuthFile = ".auth/dRep01.json";
@@ -18,9 +15,10 @@ const adaHolder01AuthFile = ".auth/adaHolder01.json";
 const user01AuthFile = ".auth/user01.json";
 
 setup.beforeEach(async () => {
-    await setAllureSuitsAndFeature("Setup");
-    await setAllureSubSuitsAndStory("Create auth");
+  await setAllureEpic("Setup");
+  await setAllureStory("Authentication");
 });
+
 setup("Create DRep 01 auth", async ({ page, context }) => {
   await importWallet(page, dRep01Wallet);
 

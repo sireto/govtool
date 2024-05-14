@@ -1,16 +1,16 @@
 import createWallet from "@fixtures/createWallet";
 import { test } from "@fixtures/walletExtension";
-import {setAllureSuitsAndFeature} from "@helpers/allure";
+import { setAllureEpic } from "@helpers/allure";
 import convertBufferToHex from "@helpers/convertBufferToHex";
 import { ShelleyWallet } from "@helpers/crypto";
 import LoginPage from "@pages/loginPage";
 import { expect } from "@playwright/test";
 
 test.beforeEach(async () => {
-    await setAllureSuitsAndFeature("1_Wallet_Connect");
+  await setAllureEpic("1. Wallet connect");
 });
 
-test("1A. Should connect wallet and choose stake-key to use @smoke @fast", async ({
+test("1A. Should connect wallet and choose stake-key to use", async ({
   page,
 }) => {
   const shellyWallet = await ShelleyWallet.generate();
@@ -28,9 +28,7 @@ test("1A. Should connect wallet and choose stake-key to use @smoke @fast", async
   await loginPage.login();
 });
 
-test("1C: Should disconnect Wallet When connected", async ({
-  page,
-}) => {
+test("1C: Should disconnect Wallet When connected", async ({ page }) => {
   await createWallet(page);
 
   const loginPage = new LoginPage(page);

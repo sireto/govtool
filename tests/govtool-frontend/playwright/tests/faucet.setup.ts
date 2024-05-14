@@ -1,5 +1,5 @@
 import { faucetWallet } from "@constants/staticWallets";
-import { setAllureSuitsAndFeature } from "@helpers/allure";
+import { setAllureStory, setAllureEpic } from "@helpers/allure";
 import { pollTransaction } from "@helpers/transaction";
 import { test as setup } from "@playwright/test";
 import { loadAmountFromFaucet } from "@services/faucetService";
@@ -9,7 +9,8 @@ import environments from "lib/constants/environments";
 setup.describe.configure({ mode: "serial", timeout: environments.txTimeOut });
 
 setup.beforeEach(async () => {
-  await setAllureSuitsAndFeature("Setup");
+  await setAllureEpic("Setup");
+  await setAllureStory("Fund");
 });
 
 setup("Fund faucet wallet", async () => {

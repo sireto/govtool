@@ -1,17 +1,14 @@
 import { adaHolderWallets, dRepWallets } from "@constants/staticWallets";
-import {setAllureSubSuitsAndStory, setAllureSuitsAndFeature,} from "@helpers/allure";
-import {ShelleyWallet } from "@helpers/crypto";
-import extractDRepsFromStakePubKey from "@helpers/extractDRepsFromStakePubkey";
+import { setAllureStory, setAllureEpic } from "@helpers/allure";
 import { pollTransaction } from "@helpers/transaction";
 import { expect, test as setup } from "@playwright/test";
 import kuberService from "@services/kuberService";
-import { writeFile } from "fs";
 import environments from "lib/constants/environments";
 
 setup.describe.configure({ mode: "serial", timeout: environments.txTimeOut });
 
 setup.beforeEach(async () => {
-  await setAllureSuitsAndFeature("Setup");
+  await setAllureEpic("Setup");
 });
 
 // setup("Setup mock wallets", async () => {
@@ -23,6 +20,7 @@ setup.beforeEach(async () => {
 // });
 
 setup("Fund static wallets", async () => {
+  await setAllureStory("Fund");
   const addresses = [...adaHolderWallets, ...dRepWallets].map((e) => e.address);
   const res = await kuberService.transferADA(addresses);
   await pollTransaction(res.txId);
@@ -30,7 +28,7 @@ setup("Fund static wallets", async () => {
 
 for (const wallet of [...adaHolderWallets, ...dRepWallets]) {
   setup(`Register stake of static wallet: ${wallet.address}`, async () => {
-   await setAllureSubSuitsAndStory("Register stake of static wallet");
+    await setAllureStory("Register stake");
     try {
       const { txId, lockInfo } = await kuberService.registerStake(
         wallet.stake.private,
@@ -49,24 +47,24 @@ for (const wallet of [...adaHolderWallets, ...dRepWallets]) {
   });
 }
 
-function saveWallets(wallets: ShelleyWallet[]) {
-  const jsonWallets = [];
-  for (let i = 0; i < wallets.length; i++) {
-    const stakePublicKey = Buffer.from(wallets[i].stakeKey.public).toString(
-      "hex",
-    );
-    const { dRepIdBech32 } = extractDRepsFromStakePubKey(stakePublicKey);
-
-    jsonWallets.push({
-      ...wallets[i].json(),
-      address: wallets[i].addressBech32(environments.networkId),
-      dRepId: dRepIdBech32,
-    });
-  }
-  const jsonString = JSON.stringify(jsonWallets, null, 2);
-  writeFile("lib/_mock/wallets.json", jsonString, "utf-8", (err) => {
-    if (err) {
-      throw Error("Failed to write wallets into file");
-    }
-  });
-}
+// function saveWallets(wallets: ShelleyWallet[]) {
+//   const jsonWallets = [];
+//   for (let i = 0; i < wallets.length; i++) {
+//     const stakePublicKey = Buffer.from(wallets[i].stakeKey.public).toString(
+//       "hex"
+//     );
+//     const { dRepIdBech32 } = extractDRepsFromStakePubKey(stakePublicKey);
+//
+//     jsonWallets.push({
+//       ...wallets[i].json(),
+//       address: wallets[i].addressBech32(environments.networkId),
+//       dRepId: dRepIdBech32,
+//     });
+//   }
+//   const jsonString = JSON.stringify(jsonWallets, null, 2);
+//   writeFile("lib/_mock/wallets.json", jsonString, "utf-8", (err) => {
+//     if (err) {
+//       throw Error("Failed to write wallets into file");
+//     }
+//   });
+// }
