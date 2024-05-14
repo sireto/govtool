@@ -1,9 +1,14 @@
 import createWallet from "@fixtures/createWallet";
 import { test } from "@fixtures/walletExtension";
+import {setAllureSuitsAndFeature} from "@helpers/allure";
 import convertBufferToHex from "@helpers/convertBufferToHex";
 import { ShelleyWallet } from "@helpers/crypto";
 import LoginPage from "@pages/loginPage";
 import { expect } from "@playwright/test";
+
+test.beforeEach(async () => {
+    await setAllureSuitsAndFeature("1_Wallet_Connect");
+});
 
 test("1A. Should connect wallet and choose stake-key to use @smoke @fast", async ({
   page,
@@ -23,7 +28,7 @@ test("1A. Should connect wallet and choose stake-key to use @smoke @fast", async
   await loginPage.login();
 });
 
-test("1C: Should disconnect Wallet When connected @smoke @fast", async ({
+test("1C: Should disconnect Wallet When connected", async ({
   page,
 }) => {
   await createWallet(page);
@@ -34,7 +39,7 @@ test("1C: Should disconnect Wallet When connected @smoke @fast", async ({
   await loginPage.logout();
 });
 
-test("1D. Should check correct network (Testnet/Mainnet) on connection @smoke @fast", async ({
+test("1D. Should check correct network (Testnet/Mainnet) on connection", async ({
   page,
 }) => {
   const wrongNetworkId = 1; // mainnet network

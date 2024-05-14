@@ -1,5 +1,6 @@
 import { user01Wallet } from "@constants/staticWallets";
 import { test } from "@fixtures/walletExtension";
+import { setAllureSuitsAndFeature } from "@helpers/allure";
 import extractExpiryDateFromText from "@helpers/extractExpiryDateFromText";
 import { isMobile, openDrawerLoggedIn } from "@helpers/mobile";
 import removeAllSpaces from "@helpers/removeAllSpaces";
@@ -24,7 +25,10 @@ enum SortOption {
 
 test.use({ storageState: ".auth/user01.json", wallet: user01Wallet });
 
-test("4A.1: Should access Governance Actions page with connecting wallet @smoke @fast", async ({
+test.beforeEach(async () => {
+  await setAllureSuitsAndFeature("4_Proposal_Visibility");
+});
+test("4A.1: Should access Governance Actions page with connecting wallet", async ({
   page,
 }) => {
   await page.goto("/");
@@ -36,7 +40,7 @@ test("4A.1: Should access Governance Actions page with connecting wallet @smoke 
   await expect(page.getByText(/Governance Actions/i)).toHaveCount(2);
 });
 
-test("4B.1: Should restrict voting for users who are not registered as DReps (with wallet connected) @fast", async ({
+test("4B.1: Should restrict voting for users who are not registered as DReps (with wallet connected)", async ({
   page,
 }) => {
   const govActionsPage = new GovernanceActionsPage(page);
@@ -46,7 +50,7 @@ test("4B.1: Should restrict voting for users who are not registered as DReps (wi
   await expect(govActionDetailsPage.voteBtn).not.toBeVisible();
 });
 
-test("4C.1: Should filter Governance Action Type on governance actions page @slow", async ({
+test("4C.1: Should filter Governance Action Type on governance actions page ", async ({
   page,
 }) => {
   test.slow();
@@ -73,7 +77,7 @@ test("4C.1: Should filter Governance Action Type on governance actions page @slo
   }
 });
 
-test("4C.2: Should sort Governance Action Type on governance actions page @slow", async ({
+test("4C.2: Should sort Governance Action Type on governance actions page ", async ({
   page,
 }) => {
   test.slow();
@@ -102,7 +106,7 @@ test("4C.2: Should sort Governance Action Type on governance actions page @slow"
   );
 });
 
-test("4D: Should filter and sort Governance Action Type on governance actions page @slow", async ({
+test("4D: Should filter and sort Governance Action Type on governance actions page ", async ({
   page,
 }) => {
   test.slow();

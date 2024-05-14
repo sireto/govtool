@@ -1,13 +1,16 @@
 import { user01Wallet } from "@constants/staticWallets";
 import { test } from "@fixtures/walletExtension";
+import { setAllureSuitsAndFeature } from "@helpers/allure";
 import DelegationPage from "@pages/delegationPage";
 import { expect } from "@playwright/test";
 
 test.use({ storageState: ".auth/user01.json", wallet: user01Wallet });
 
-test("2B. Should access delegation to dRep page @smoke @fast", async ({
-  page,
-}) => {
+test.beforeEach(async () => {
+  await setAllureSuitsAndFeature("2_Delegation");
+});
+
+test("2B. Should access delegation to dRep page", async ({ page }) => {
   await page.goto("/");
 
   await page.getByTestId("delegate-button").click(); // BUG incorrect test ID
@@ -17,7 +20,8 @@ test("2B. Should access delegation to dRep page @smoke @fast", async ({
 });
 
 // Skipped: No need to insert dRep id to delegate
-test.skip("2I. Should check validity of DRep Id @slow", async ({ page }) => {
+test("2I. Should check validity of DRep Id ", async ({ page }) => {
+  test.skip();
   // const urlToIntercept = "**/utxo?**";
   // const invalidDRepId = generateRandomDRepId();
   // const validDRepId = dRep01Wallet.dRepId;
@@ -34,9 +38,7 @@ test.skip("2I. Should check validity of DRep Id @slow", async ({ page }) => {
   // expect(response.body.length).toEqual(0);
 });
 
-test("2D. Verify Delegation Behavior in Connected State @smoke @fast", async ({
-  page,
-}) => {
+test("2D. Verify Delegation Behavior in Connected State", async ({ page }) => {
   const delegationPage = new DelegationPage(page);
   await delegationPage.goto();
 

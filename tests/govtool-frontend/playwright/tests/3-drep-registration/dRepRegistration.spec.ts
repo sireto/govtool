@@ -1,6 +1,11 @@
+import { setAllureSuitsAndFeature } from "@helpers/allure";
 import { test, expect } from "@playwright/test";
 
-test("3C. Should open wallet connection popup, when Register as DRep from wallet unconnected state @smoke @fast", async ({
+test.beforeEach(async () => {
+ await setAllureSuitsAndFeature("3_Drep_Registration");
+});
+
+test("3C. Should open wallet connection popup, when Register as DRep from wallet unconnected state", async ({
   page,
 }) => {
   await page.goto("/");

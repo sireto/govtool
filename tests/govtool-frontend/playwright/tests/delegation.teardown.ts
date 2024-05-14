@@ -1,11 +1,14 @@
 import environments from "@constants/environments";
 import { adaHolderWallets } from "@constants/staticWallets";
+import { setAllureSuitsAndFeature } from "@helpers/allure";
 import { pollTransaction } from "@helpers/transaction";
 import { test as cleanup } from "@playwright/test";
 import kuberService from "@services/kuberService";
 
 cleanup.describe.configure({ timeout: environments.txTimeOut });
-
+cleanup.beforeEach(async () => {
+ await setAllureSuitsAndFeature("Setup");
+});
 cleanup(`Abstain delegation`, async () => {
   const stakePrivKeys = adaHolderWallets.map((wallet) => wallet.stake.private);
   const stakePkhs = adaHolderWallets.map((wallet) => wallet.stake.pkh);

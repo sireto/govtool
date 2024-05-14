@@ -1,8 +1,7 @@
 import { adaHolderWallets, dRepWallets } from "@constants/staticWallets";
-import { ShelleyWallet } from "@helpers/crypto";
+import {setAllureSubSuitsAndStory, setAllureSuitsAndFeature,} from "@helpers/allure";
+import {ShelleyWallet } from "@helpers/crypto";
 import extractDRepsFromStakePubKey from "@helpers/extractDRepsFromStakePubkey";
-import generateShellyWallets from "@helpers/generateShellyWallets";
-import setupWallets from "@helpers/setupWallets";
 import { pollTransaction } from "@helpers/transaction";
 import { expect, test as setup } from "@playwright/test";
 import kuberService from "@services/kuberService";
@@ -11,13 +10,17 @@ import environments from "lib/constants/environments";
 
 setup.describe.configure({ mode: "serial", timeout: environments.txTimeOut });
 
-setup("Setup mock wallets", async () => {
-  setup.skip(!environments.oneTimeWalletSetup);
-
-  const wallets = await generateShellyWallets(6);
-  await setupWallets(wallets);
-  saveWallets(wallets);
+setup.beforeEach(async () => {
+  await setAllureSuitsAndFeature("Setup");
 });
+
+// setup("Setup mock wallets", async () => {
+//   setup.skip(!environments.oneTimeWalletSetup);
+
+//   const wallets = await generateShellyWallets(6);
+//   await setupWallets(wallets);
+//   saveWallets(wallets);
+// });
 
 setup("Fund static wallets", async () => {
   const addresses = [...adaHolderWallets, ...dRepWallets].map((e) => e.address);
@@ -27,6 +30,7 @@ setup("Fund static wallets", async () => {
 
 for (const wallet of [...adaHolderWallets, ...dRepWallets]) {
   setup(`Register stake of static wallet: ${wallet.address}`, async () => {
+   await setAllureSubSuitsAndStory("Register stake of static wallet");
     try {
       const { txId, lockInfo } = await kuberService.registerStake(
         wallet.stake.private,
