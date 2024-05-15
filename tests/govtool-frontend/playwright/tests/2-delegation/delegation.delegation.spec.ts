@@ -1,9 +1,5 @@
 import environments from "@constants/environments";
-import {
-  adaHolder01Wallet,
-  adaHolder02Wallet,
-  dRep01Wallet,
-} from "@constants/staticWallets";
+import { adaHolder01Wallet, dRep01Wallet } from "@constants/staticWallets";
 import { createTempDRepAuth } from "@datafactory/createAuth";
 import { test } from "@fixtures/walletExtension";
 import { setAllureEpic } from "@helpers/allure";
@@ -77,10 +73,10 @@ test.describe("Delegate to myself", () => {
 });
 
 test.describe("Change Delegation", () => {
-  test.use({
-    storageState: ".auth/adaHolder02.json",
-    wallet: adaHolder02Wallet,
-  });
+  // test.use({
+  //   storageState: ".auth/adaHolder02.json",
+  //   wallet: adaHolder02Wallet,
+  // });
 
   // Skipped: Blocked because delegation is not working
   test("2F. Should change delegated dRep", async ({ page }) => {

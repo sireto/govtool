@@ -15,6 +15,7 @@ on:
           - info
           - warning
           - debug
+  workflow_run:
     workflows: ["Build and deploy GovTool to TEST server"]
     types: [completed]
 
