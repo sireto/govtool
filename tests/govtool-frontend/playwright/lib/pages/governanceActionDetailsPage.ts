@@ -63,7 +63,7 @@ export default class GovernanceActionDetailsPage {
       const voteMetadata = await this.downloadVoteMetadata();
       const url = await metadataBucketService.uploadMetadata(
         voteMetadata.name,
-        voteMetadata.data,
+        voteMetadata.data
       );
 
       await this.page.getByPlaceholder("URL").fill(url);
