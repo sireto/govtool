@@ -141,5 +141,5 @@ jobs:
           target-folder: ${{ env.REPORT_NAME }}
 
     env:
-      REPORT_NAME: integration
+      REPORT_NAME: govtool-frontend
       GH_PAGES: ${{vars.GH_PAGES}}
