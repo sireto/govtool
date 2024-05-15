@@ -1,7 +1,8 @@
 import environments from "@constants/environments";
-import { downloadMetadata } from "@helpers/metadata";
-import { Download, Page } from "@playwright/test";
+import {downloadMetadata} from "@helpers/metadata";
+import {Download, Page} from "@playwright/test";
 import metadataBucketService from "@services/metadataBucketService";
+import {withTxConfirmation} from "lib/transaction.decorator";
 
 export default class GovernanceActionDetailsPage {
   readonly voteBtn = this.page.getByTestId("vote-button");
@@ -45,6 +46,7 @@ export default class GovernanceActionDetailsPage {
     );
   }
 
+  @withTxConfirmation
   async vote(context?: string) {
     await this.yesVoteRadio.click();
 
@@ -61,7 +63,7 @@ export default class GovernanceActionDetailsPage {
       const voteMetadata = await this.downloadVoteMetadata();
       const url = await metadataBucketService.uploadMetadata(
         voteMetadata.name,
-        voteMetadata.data
+        voteMetadata.data,
       );
 
       await this.page.getByPlaceholder("URL").fill(url);
