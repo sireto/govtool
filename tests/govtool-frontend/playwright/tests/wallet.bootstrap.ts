@@ -11,14 +11,6 @@ setup.beforeEach(async () => {
   await setAllureEpic("Setup");
 });
 
-// setup("Setup mock wallets", async () => {
-//   setup.skip(!environments.oneTimeWalletSetup);
-
-//   const wallets = await generateShellyWallets(6);
-//   await setupWallets(wallets);
-//   saveWallets(wallets);
-// });
-
 setup("Fund static wallets", async () => {
   await setAllureStory("Fund");
   const addresses = [...adaHolderWallets, ...dRepWallets].map((e) => e.address);
@@ -47,24 +39,3 @@ for (const wallet of [...adaHolderWallets, ...dRepWallets]) {
   });
 }
 
-// function saveWallets(wallets: ShelleyWallet[]) {
-//   const jsonWallets = [];
-//   for (let i = 0; i < wallets.length; i++) {
-//     const stakePublicKey = Buffer.from(wallets[i].stakeKey.public).toString(
-//       "hex"
-//     );
-//     const { dRepIdBech32 } = extractDRepsFromStakePubKey(stakePublicKey);
-//
-//     jsonWallets.push({
-//       ...wallets[i].json(),
-//       address: wallets[i].addressBech32(environments.networkId),
-//       dRepId: dRepIdBech32,
-//     });
-//   }
-//   const jsonString = JSON.stringify(jsonWallets, null, 2);
-//   writeFile("lib/_mock/wallets.json", jsonString, "utf-8", (err) => {
-//     if (err) {
-//       throw Error("Failed to write wallets into file");
-//     }
-//   });
-// }
