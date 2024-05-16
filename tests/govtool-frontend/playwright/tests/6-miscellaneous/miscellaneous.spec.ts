@@ -25,7 +25,7 @@ test("6C. Navigation within the dApp", async ({ page, context }) => {
   ]);
 
   await expect(guidesPage).toHaveURL(
-    `${environments.docsUrl}/about/what-is-sanchonet-govtool`,
+    `${environments.docsUrl}/about/what-is-sanchonet-govtool`
   );
 
   if (isMobile(page)) {

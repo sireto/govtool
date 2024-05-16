@@ -26,7 +26,7 @@ test.describe("Logged in DReps", () => {
   }) => {
     await page.goto("/");
     await expect(page.getByTestId("dRep-id-display")).toContainText(
-      dRep01Wallet.dRepId,
+      dRep01Wallet.dRepId
     ); // BUG: testId -> dRep-id-display-dashboard (It is taking sidebar dRep-id)
   });
 
@@ -52,7 +52,7 @@ test.describe("Temporary DReps", () => {
     const wallet = await ShelleyWallet.generate();
     const res = await kuberService.transferADA(
       [wallet.addressBech32(environments.networkId)],
-      600,
+      600
     );
     await pollTransaction(res.txId, res.lockInfo);
 
@@ -69,7 +69,7 @@ test.describe("Temporary DReps", () => {
 
     await expect(dRepRegistrationPage.registrationSuccessModal).toBeVisible();
     await expect(
-      dRepRegistrationPage.registrationSuccessModal.getByText("this link"),
+      dRepRegistrationPage.registrationSuccessModal.getByText("this link")
     ).toBeVisible();
   });
 
@@ -82,7 +82,7 @@ test.describe("Temporary DReps", () => {
     const wallet = await ShelleyWallet.generate();
     const registrationRes = await kuberService.dRepRegistration(
       convertBufferToHex(wallet.stakeKey.private),
-      convertBufferToHex(wallet.stakeKey.pkh),
+      convertBufferToHex(wallet.stakeKey.pkh)
     );
     await pollTransaction(registrationRes.txId, registrationRes.lockInfo);
 
@@ -98,7 +98,7 @@ test.describe("Temporary DReps", () => {
     await dRepPage.getByTestId("retire-button").click(); // BUG testId -> continue-retire-button
 
     await expect(
-      dRepPage.getByTestId("retirement-transaction-error-modal"),
+      dRepPage.getByTestId("retirement-transaction-error-modal")
     ).toBeVisible();
   });
 
@@ -111,7 +111,7 @@ test.describe("Temporary DReps", () => {
     const wallet = await ShelleyWallet.generate();
     const registrationRes = await kuberService.dRepRegistration(
       convertBufferToHex(wallet.stakeKey.private),
-      convertBufferToHex(wallet.stakeKey.pkh),
+      convertBufferToHex(wallet.stakeKey.pkh)
     );
     await pollTransaction(registrationRes.txId, registrationRes.lockInfo);
 
@@ -131,7 +131,7 @@ test.describe("Temporary DReps", () => {
     await dRepPage.getByTestId("retire-button").click();
     await dRepPage.getByTestId("retire-button").click(); // BUG: testId -> continue-retire-button
     await expect(
-      dRepPage.getByTestId("retirement-transaction-submitted-modal"),
+      dRepPage.getByTestId("retirement-transaction-submitted-modal")
     ).toBeVisible();
     dRepPage.getByTestId("confirm-modal-button").click();
     await waitForTxConfirmation(dRepPage);

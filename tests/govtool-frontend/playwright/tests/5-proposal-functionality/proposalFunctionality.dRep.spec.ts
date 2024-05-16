@@ -93,7 +93,7 @@ test.describe("Proposal checks", () => {
     await expect(
       govActionDetailsPage.currentPage.getByText("Be careful", {
         exact: false,
-      }),
+      })
     ).toBeVisible();
   });
 
@@ -117,13 +117,13 @@ test.describe("Perform voting", () => {
     const wallet = await ShelleyWallet.generate();
     const registrationRes = await kuberService.dRepRegistration(
       convertBufferToHex(wallet.stakeKey.private),
-      convertBufferToHex(wallet.stakeKey.pkh),
+      convertBufferToHex(wallet.stakeKey.pkh)
     );
     await pollTransaction(registrationRes.txId, registrationRes.lockInfo);
 
     const res = await kuberService.transferADA(
       [wallet.addressBech32(environments.networkId)],
-      40,
+      40
     );
     await pollTransaction(res.txId, registrationRes.lockInfo);
 
@@ -148,12 +148,12 @@ test.describe("Perform voting", () => {
     await waitForTxConfirmation(govActionDetailsPage.currentPage);
 
     const governanceActionsPage = new GovernanceActionsPage(
-      govActionDetailsPage.currentPage,
+      govActionDetailsPage.currentPage
     );
     await governanceActionsPage.goto();
     await governanceActionsPage.votedTab.click();
     await expect(
-      govActionDetailsPage.currentPage.getByTestId("my-vote").getByText("Yes"),
+      govActionDetailsPage.currentPage.getByTestId("my-vote").getByText("Yes")
     ).toBeVisible();
 
     govActionDetailsPage = await governanceActionsPage.viewFirstVotedProposal();
@@ -162,7 +162,7 @@ test.describe("Perform voting", () => {
 
     await governanceActionsPage.votedTab.click();
     await expect(
-      govActionDetailsPage.currentPage.getByTestId("my-vote").getByText("No"),
+      govActionDetailsPage.currentPage.getByTestId("my-vote").getByText("No")
     ).toBeVisible();
   });
 
@@ -178,12 +178,12 @@ test.describe("Perform voting", () => {
     await waitForTxConfirmation(govActionDetailsPage.currentPage);
 
     const governanceActionsPage = new GovernanceActionsPage(
-      govActionDetailsPage.currentPage,
+      govActionDetailsPage.currentPage
     );
     await governanceActionsPage.goto();
     await governanceActionsPage.votedTab.click();
     await expect(
-      govActionDetailsPage.currentPage.getByTestId("my-vote").getByText("Yes"),
+      govActionDetailsPage.currentPage.getByTestId("my-vote").getByText("Yes")
     ).toBeVisible();
   });
 });
