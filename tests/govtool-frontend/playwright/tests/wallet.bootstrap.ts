@@ -1,7 +1,7 @@
-import { adaHolderWallets, dRepWallets } from "@constants/staticWallets";
-import { setAllureStory, setAllureEpic } from "@helpers/allure";
-import { pollTransaction } from "@helpers/transaction";
-import { expect, test as setup } from "@playwright/test";
+import {adaHolderWallets, dRepWallets} from "@constants/staticWallets";
+import {setAllureEpic, setAllureStory} from "@helpers/allure";
+import {pollTransaction} from "@helpers/transaction";
+import {expect, test as setup} from "@playwright/test";
 import kuberService from "@services/kuberService";
 import environments from "lib/constants/environments";
 
@@ -26,7 +26,7 @@ for (const wallet of [...adaHolderWallets, ...dRepWallets]) {
         wallet.stake.private,
         wallet.stake.pkh,
         wallet.payment.private,
-        wallet.address,
+        wallet.address
       );
       await pollTransaction(txId, lockInfo);
     } catch (err) {
@@ -38,4 +38,3 @@ for (const wallet of [...adaHolderWallets, ...dRepWallets]) {
     }
   });
 }
-
