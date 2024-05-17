@@ -1,24 +1,28 @@
 import {dRep01Wallet, user01Wallet} from "@constants/staticWallets";
 import {test} from "@fixtures/walletExtension";
 import {ShelleyWallet} from "@helpers/crypto";
+import {isMobile} from "@helpers/mobile";
 import extractDRepFromWallet from "@helpers/shellyWallet";
 import DRepDirectoryPage from "@pages/dRepDirectoryPage";
 import {expect} from "@playwright/test";
 import {setAllureEpic} from "@helpers/allure";
 
 test.use({ storageState: ".auth/user01.json", wallet: user01Wallet });
-
 test.beforeEach(async () => {
-  await setAllureEpic("2. Delegation");
+    await setAllureEpic("2. Delegation");
 });
-
-test("2B. Should access delegation to dRep page", async ({ page }) => {
+test("2B. Should access DRep Directory page", async ({ page }) => {
   await page.goto("/");
 
   await page.getByTestId("view-drep-directory-button").click();
-  await expect(
-    page.getByRole("navigation").getByText("DRep Directory")
-  ).toBeVisible();
+
+  if (isMobile(page)) {
+    await expect(page.getByText("DRep Directory")).toBeVisible();
+  } else {
+    await expect(
+      page.getByRole("navigation").getByText("DRep Directory")
+    ).toBeVisible();
+  }
 });
 
 test("2I. Should check validity of DRep Id", async ({ page }) => {
