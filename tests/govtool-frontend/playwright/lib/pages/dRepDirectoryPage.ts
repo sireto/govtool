@@ -12,10 +12,9 @@ export default class DRepDirectoryPage {
   readonly sortBtn = this.page.getByTestId("sort-button");
   readonly showMoreBtn = this.page.getByTestId("show-more-button");
 
-  readonly automaticDelegationOptionsDropdown = this.page.getByRole("button", {
-    name: "Automated Voting Options arrow",
-  }); // BUG: testId -> delegation-options-dropdown
-
+  readonly automaticDelegationOptionsDropdown = this.page.getByTestId(
+    "automated-voting-options-accordion"
+  );
   readonly delegateToDRepCard = this.page.getByTestId("delegate-to-drep-card");
   readonly signalNoConfidenceCard = this.page
     .getByRole("region")

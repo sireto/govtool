@@ -19,9 +19,7 @@ export default class GovernanceActionDetailsPage {
   readonly externalModalBtn = this.page.getByTestId("external-modal-button");
   readonly governanceActionId = this.page.getByText("Governance Action ID:");
 
-  readonly contextBtn = this.page.getByRole("button", {
-    name: "Provide context about your",
-  }); // BUG testId
+  readonly contextBtn = this.page.getByTestId("provide-context-button");
   readonly viewOtherDetailsLink = this.page.getByTestId(
     "view-other-details-button"
   );
@@ -59,7 +57,7 @@ export default class GovernanceActionDetailsPage {
 
       this.page
         .getByRole("button", { name: "download Vote_Context.jsonld" })
-        .click();
+        .click(); // BUG test id = metadata-download-button
       const voteMetadata = await this.downloadVoteMetadata();
       const url = await metadataBucketService.uploadMetadata(
         voteMetadata.name,
