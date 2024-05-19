@@ -95,7 +95,7 @@ test.describe("Temporary DReps", () => {
 
     await dRepPage.goto("/");
     await dRepPage.getByTestId("retire-button").click();
-    await dRepPage.getByTestId("retire-button").click(); // BUG testId -> continue-retire-button
+    await dRepPage.getByTestId("continue-retirement-button").click();
 
     await expect(
       dRepPage.getByTestId("retirement-transaction-error-modal")
@@ -129,7 +129,7 @@ test.describe("Temporary DReps", () => {
 
     await dRepPage.goto("/");
     await dRepPage.getByTestId("retire-button").click();
-    await dRepPage.getByTestId("retire-button").click(); // BUG: testId -> continue-retire-button
+    await dRepPage.getByTestId("continue-retirement-button").click();
     await expect(
       dRepPage.getByTestId("retirement-transaction-submitted-modal")
     ).toBeVisible();

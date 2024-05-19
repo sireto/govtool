@@ -25,7 +25,7 @@ export default class DRepRegistrationPage {
 
   async goto() {
     await this.page.goto(`${environments.frontendUrl}/register_drep`);
-    await this.continueBtn.click(); // BUG: testId -> continue-register-button
+    await this.continueBtn.click();
   }
 
   @withTxConfirmation
@@ -50,15 +50,17 @@ export default class DRepRegistrationPage {
     await this.page.getByRole("checkbox").click();
     await this.continueBtn.click();
 
-    this.page.getByRole("button", { name: `${dRepInfo.name}.jsonld` }).click();
+    await this.continueBtn.click();
+    await this.page.getByRole("checkbox").click();
+    await this.continueBtn.click();
+    this.page.getByRole("button", { name: `${dRepInfo.name}.jsonld` }).click(); // BUG test id = metadata-download-button
     const dRepMetadata = await this.downloadVoteMetadata();
     const url = await metadataBucketService.uploadMetadata(
       dRepMetadata.name,
       dRepMetadata.data
     );
-
     await this.page.getByPlaceholder("URL").fill(url);
-    await this.page.getByTestId("register-button").click();
+    await this.registerBtn.click();
   }
 
   async downloadVoteMetadata() {
