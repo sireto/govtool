@@ -1,15 +1,15 @@
 import environments from "@constants/environments";
-import { dRep01Wallet } from "@constants/staticWallets";
-import { createTempDRepAuth } from "@datafactory/createAuth";
-import { test } from "@fixtures/walletExtension";
-import { setAllureEpic } from "@helpers/allure";
+import {dRep01Wallet} from "@constants/staticWallets";
+import {createTempDRepAuth} from "@datafactory/createAuth";
+import {test} from "@fixtures/walletExtension";
+import {setAllureEpic} from "@helpers/allure";
 import convertBufferToHex from "@helpers/convertBufferToHex";
-import { ShelleyWallet } from "@helpers/crypto";
-import { createNewPageWithWallet } from "@helpers/page";
-import { pollTransaction, waitForTxConfirmation } from "@helpers/transaction";
+import {ShelleyWallet} from "@helpers/crypto";
+import {createNewPageWithWallet} from "@helpers/page";
+import {pollTransaction, waitForTxConfirmation} from "@helpers/transaction";
 import GovernanceActionDetailsPage from "@pages/governanceActionDetailsPage";
 import GovernanceActionsPage from "@pages/governanceActionsPage";
-import { expect } from "@playwright/test";
+import {expect} from "@playwright/test";
 import kuberService from "@services/kuberService";
 
 test.beforeEach(async () => {
@@ -27,7 +27,7 @@ test.describe("Proposal checks", () => {
     govActionDetailsPage = await govActionsPage.viewFirstProposal();
   });
 
-  test("5A. Should show relevant details about governance action as DRep ", async () => {
+  test("5A. Should show relevant details about governance action as DRep", async () => {
     await expect(govActionDetailsPage.governanceActionType).toBeVisible();
     await expect(govActionDetailsPage.submittedDate).toBeVisible();
     await expect(govActionDetailsPage.expiryDate).toBeVisible();
@@ -41,11 +41,11 @@ test.describe("Proposal checks", () => {
     await expect(govActionDetailsPage.abstainRadio).toBeVisible();
   });
 
-  test("5B. Should view Vote button on governance action item on registered as DRep ", async () => {
+  test("5B. Should view Vote button on governance action item on registered as DRep", async () => {
     await expect(govActionDetailsPage.voteBtn).toBeVisible();
   });
 
-  test("5C. Should show required field in proposal voting on registered as DRep ", async () => {
+  test("5C. Should show required field in proposal voting on registered as DRep", async () => {
     await expect(govActionDetailsPage.voteBtn).toBeVisible();
     await expect(govActionDetailsPage.yesVoteRadio).toBeVisible();
     await expect(govActionDetailsPage.noVoteRadio).toBeVisible();
@@ -61,8 +61,8 @@ test.describe("Proposal checks", () => {
   });
 
   // Skipped: No url/hash input to validate
-  test("5D. Should validate proposal voting ", async () => {
-    test.skip();
+  test("5D. Should validate proposal voting", async () => {
+      test.skip();
     // const invalidURLs = ["testdotcom", "https://testdotcom", "https://test.c"];
     // invalidURLs.forEach(async (url) => {
     //   govActionDetailsPage.urlInput.fill(url);

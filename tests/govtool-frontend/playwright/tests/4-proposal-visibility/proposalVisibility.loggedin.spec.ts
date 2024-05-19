@@ -50,7 +50,7 @@ test("4B.1: Should restrict voting for users who are not registered as DReps (wi
   await expect(govActionDetailsPage.voteBtn).not.toBeVisible();
 });
 
-test("4C.1: Should filter Governance Action Type on governance actions page ", async ({
+test("4C.1: Should filter Governance Action Type on governance actions page", async ({
   page,
 }) => {
   test.slow();
@@ -77,7 +77,7 @@ test("4C.1: Should filter Governance Action Type on governance actions page ", a
   }
 });
 
-test("4C.2: Should sort Governance Action Type on governance actions page ", async ({
+test("4C.2: Should sort Governance Action Type on governance actions page", async ({
   page,
 }) => {
   test.slow();
@@ -106,7 +106,7 @@ test("4C.2: Should sort Governance Action Type on governance actions page ", asy
   );
 });
 
-test("4D: Should filter and sort Governance Action Type on governance actions page ", async ({
+test("4D: Should filter and sort Governance Action Type on governance actions page", async ({
   page,
 }) => {
   test.slow();

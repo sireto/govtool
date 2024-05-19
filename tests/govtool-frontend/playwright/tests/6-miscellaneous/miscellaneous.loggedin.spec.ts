@@ -1,9 +1,7 @@
 import {user01Wallet} from "@constants/staticWallets";
 import {test} from "@fixtures/walletExtension";
-import DelegationPage from "@pages/dRepDirectoryPage";
-import {setAllureEpic} from "@helpers/allure";
-import DRepRegistrationPage from "@pages/dRepRegistrationPage";
 import {expect} from "@playwright/test";
+import {setAllureEpic} from "@helpers/allure";
 
 test.use({ storageState: ".auth/user01.json", wallet: user01Wallet });
 

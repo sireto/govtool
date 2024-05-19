@@ -14,7 +14,7 @@ test("4A.2: Should access Governance Actions page without connecting wallet", as
   await expect(page.getByText(/Governance actions/i)).toHaveCount(2);
 });
 
-test("4B.2: Should restrict voting for users who are not registered as DReps (without wallet connected)  @flaky", async ({
+test("4B.2: Should restrict voting for users who are not registered as DReps (without wallet connected)", async ({
   page,
 }) => {
   const govActionsPage = new GovernanceActionsPage(page);
