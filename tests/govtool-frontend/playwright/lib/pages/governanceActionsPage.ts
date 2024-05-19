@@ -64,6 +64,7 @@ export default class GovernanceActionsPage {
   }
 
   async getAllProposals() {
+    await this.page.waitForTimeout(2000);
     return this.page.locator('[data-test-id$="-card"]').all();
   }
 
@@ -118,7 +119,8 @@ export default class GovernanceActionsPage {
       }
     }
 
-      // Frontend validation
+    await this.page.waitForTimeout(2000);
+    // Frontend validation
     const proposalCards = await Promise.all(
       filterKeys.map((key) =>
         this.page.getByTestId(`govaction-${key}-card`).allInnerTexts()
