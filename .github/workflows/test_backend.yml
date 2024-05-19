@@ -12,11 +12,11 @@ on:
       deployment:
         required: true
         type: choice
-        default: "staging.govtool.byron.network/api"
+        default: "govtool.cardanoapi.io/api"
         options:
           - "sanchogov.tools/api"
           - "staging.govtool.byron.network/api"
-          - "govtool-sanchonet.cardanoapi.io/api"
+          - "govtool.cardanoapi.io/api"
 
 jobs:
   backend-tests:
@@ -38,9 +38,7 @@ jobs:
           pip install -r requirements.txt
           python -m pytest --alluredir allure-results
         env:
-          BASE_URL: https://${{inputs.deployment ||  'staging.govtool.byron.network/api' }}
-          METRICS_URL: https://metrics.cardanoapi.io
-          METRICS_API_SECRET: "${{ secrets.METRICS_SERVER_SECRET_TOKEN }}"
+          BASE_URL: https://${{inputs.deployment ||  'govtool.cardanoapi.io/api' }}
 
       - name: Upload report
         uses: actions/upload-artifact@v3
