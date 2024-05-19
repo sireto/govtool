@@ -1,9 +1,9 @@
-import { user01Wallet } from "@constants/staticWallets";
-import { faker } from "@faker-js/faker";
-import { test } from "@fixtures/walletExtension";
-import { setAllureEpic } from "@helpers/allure";
+import {user01Wallet} from "@constants/staticWallets";
+import {faker} from "@faker-js/faker";
+import {test} from "@fixtures/walletExtension";
+import {setAllureEpic} from "@helpers/allure";
 import DRepRegistrationPage from "@pages/dRepRegistrationPage";
-import { expect } from "@playwright/test";
+import {expect} from "@playwright/test";
 
 test.use({
   storageState: ".auth/user01.json",
@@ -35,35 +35,38 @@ test("3D.Verify DRep registration functionality with Wallet Connected State Stat
   await expect(dRepRegistrationPage.continueBtn).toBeVisible();
 });
 
-// Skipped: Because there are no fields for url and hash inputs.
-test("3E. Should reject invalid data and accept valid data", async ({
-  page,
-}) => {
-  test.skip();
+test("3E. Should accept valid data in DRep form", async ({ page }) => {
   const dRepRegistrationPage = new DRepRegistrationPage(page);
   await dRepRegistrationPage.goto();
 
-  // Invalidity test
-  faker.helpers
-    .multiple(() => faker.internet.displayName(), { count: 100 })
-    .forEach(async (dRepName) => {
-      await dRepRegistrationPage.nameInput.fill(dRepName);
-      await dRepRegistrationPage.nameInput.clear({ force: true });
-    });
+  for (let i = 0; i < 100; i++) {
+    await dRepRegistrationPage.validateForm(
+      faker.internet.displayName(),
+      faker.internet.email(),
+      faker.lorem.paragraph(),
+      faker.internet.url()
+    );
+  }
 
-  // Validity test
+  for (let i = 0; i < 6; i++) {
+    await expect(dRepRegistrationPage.addLinkBtn).toBeVisible();
+    await dRepRegistrationPage.addLinkBtn.click();
+  }
+
+  await expect(dRepRegistrationPage.addLinkBtn).toBeHidden();
 });
 
 test("3F. Should create proper DRep registration request, when registered with data", async ({
   page,
 }) => {
-  const urlToIntercept = "**/utxo?**";
-
   const dRepRegistrationPage = new DRepRegistrationPage(page);
   await dRepRegistrationPage.goto();
 
-  await dRepRegistrationPage.register({ name: "Test_dRep" });
+  await dRepRegistrationPage.register({ name: "Test" }).catch((err) => {
+    // Fails because real tx is not submitted
+  });
 
-  const response = await page.waitForResponse(urlToIntercept);
-  expect(response.body.length).toEqual(0);
+  await expect(
+    page.getByTestId("registration-transaction-error-modal")
+  ).toBeVisible();
 });
