@@ -54,7 +54,7 @@ test("3E. Should reject invalid data and accept valid data", async ({
   // Validity test
 });
 
-test("3F. Should create proper DRep registration request, when registered with data ", async ({
+test("3F. Should create proper DRep registration request, when registered with data", async ({
   page,
 }) => {
   const urlToIntercept = "**/utxo?**";

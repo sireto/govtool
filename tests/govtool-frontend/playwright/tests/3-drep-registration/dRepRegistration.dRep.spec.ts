@@ -1,16 +1,16 @@
 import environments from "@constants/environments";
-import { dRep01Wallet } from "@constants/staticWallets";
-import { createTempDRepAuth } from "@datafactory/createAuth";
-import { faker } from "@faker-js/faker";
-import { test } from "@fixtures/walletExtension";
-import { setAllureEpic } from "@helpers/allure";
+import {dRep01Wallet} from "@constants/staticWallets";
+import {createTempDRepAuth} from "@datafactory/createAuth";
+import {faker} from "@faker-js/faker";
+import {test} from "@fixtures/walletExtension";
+import {setAllureEpic} from "@helpers/allure";
 import convertBufferToHex from "@helpers/convertBufferToHex";
-import { ShelleyWallet } from "@helpers/crypto";
-import { createNewPageWithWallet } from "@helpers/page";
-import { pollTransaction, waitForTxConfirmation } from "@helpers/transaction";
+import {ShelleyWallet} from "@helpers/crypto";
+import {createNewPageWithWallet} from "@helpers/page";
+import {pollTransaction, waitForTxConfirmation} from "@helpers/transaction";
 import DRepRegistrationPage from "@pages/dRepRegistrationPage";
 import GovernanceActionsPage from "@pages/governanceActionsPage";
-import { expect } from "@playwright/test";
+import {expect} from "@playwright/test";
 import kuberService from "@services/kuberService";
 import * as crypto from "crypto";
 
@@ -43,7 +43,7 @@ test.describe("Logged in DReps", () => {
 });
 
 test.describe("Temporary DReps", () => {
-  test("3G. Should show confirmation message with link to view transaction, when DRep registration txn is submitted  ", async ({
+  test("3G. Should show confirmation message with link to view transaction, when DRep registration txn is submitted", async ({
     page,
     browser,
   }, testInfo) => {
@@ -73,7 +73,7 @@ test.describe("Temporary DReps", () => {
     ).toBeVisible();
   });
 
-  test("3I. Should verify retire as DRep ", async ({
+  test("3I. Should verify retire as DRep", async ({
     page,
     browser,
   }, testInfo) => {
