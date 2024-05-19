@@ -119,7 +119,7 @@ export default class GovernanceActionsPage {
       }
     }
 
-      // Frontend validation
+    // Frontend validation
     const proposalCards = await Promise.all(
       filterKeys.map((key) =>
         this.page.getByTestId(`govaction-${key}-card`).allInnerTexts()
