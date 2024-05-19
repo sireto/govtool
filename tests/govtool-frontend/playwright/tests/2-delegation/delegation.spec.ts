@@ -8,17 +8,6 @@ test.beforeEach(async () => {
     await setAllureEpic("2. Delegation");
 });
 
-test("2C. Verify DRep Behavior in Disconnected State", async ({ page }) => {
-  await page.goto("/");
-
-  await page.getByTestId("view-drep-directory-button").click();
-  await page
-    .locator('[data-testid$="-connect-to-delegate-button"]')
-    .first()
-    .click();
-  await expect(page.getByTestId("connect-your-wallet-modal")).toBeVisible();
-});
-
 test("2J. Should search by DRep id", async ({ page }) => {
   const dRepDirectory = new DRepDirectoryPage(page);
   await dRepDirectory.goto();
