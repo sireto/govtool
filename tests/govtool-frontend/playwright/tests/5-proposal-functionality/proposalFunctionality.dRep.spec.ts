@@ -3,10 +3,9 @@ import {dRep01Wallet} from "@constants/staticWallets";
 import {createTempDRepAuth} from "@datafactory/createAuth";
 import {test} from "@fixtures/walletExtension";
 import {setAllureEpic} from "@helpers/allure";
-import convertBufferToHex from "@helpers/convertBufferToHex";
 import {ShelleyWallet} from "@helpers/crypto";
 import {createNewPageWithWallet} from "@helpers/page";
-import {pollTransaction, waitForTxConfirmation} from "@helpers/transaction";
+import {registerDRepForWallet, transferAdaForWallet, waitForTxConfirmation} from "@helpers/transaction";
 import GovernanceActionDetailsPage from "@pages/governanceActionDetailsPage";
 import GovernanceActionsPage from "@pages/governanceActionsPage";
 import {expect} from "@playwright/test";
@@ -15,6 +14,7 @@ import kuberService from "@services/kuberService";
 test.beforeEach(async () => {
   await setAllureEpic("5. Proposal functionality");
 });
+
 test.describe("Proposal checks", () => {
   test.use({ storageState: ".auth/dRep01.json", wallet: dRep01Wallet });
 
@@ -115,17 +115,8 @@ test.describe("Perform voting", () => {
     test.setTimeout(testInfo.timeout + 2 * environments.txTimeOut);
 
     const wallet = await ShelleyWallet.generate();
-    const registrationRes = await kuberService.dRepRegistration(
-      convertBufferToHex(wallet.stakeKey.private),
-      convertBufferToHex(wallet.stakeKey.pkh)
-    );
-    await pollTransaction(registrationRes.txId, registrationRes.lockInfo);
-
-    const res = await kuberService.transferADA(
-      [wallet.addressBech32(environments.networkId)],
-      40
-    );
-    await pollTransaction(res.txId, registrationRes.lockInfo);
+    await registerDRepForWallet(wallet);
+    await transferAdaForWallet(wallet, 40);
 
     const tempDRepAuth = await createTempDRepAuth(page, wallet);
 
@@ -196,17 +187,8 @@ test.describe("Check voting power", () => {
     test.setTimeout(testInfo.timeout + 2 * environments.txTimeOut);
 
     const wallet = await ShelleyWallet.generate();
-    const registrationRes = await kuberService.dRepRegistration(
-      convertBufferToHex(wallet.stakeKey.private),
-      convertBufferToHex(wallet.stakeKey.pkh)
-    );
-    await pollTransaction(registrationRes.txId, registrationRes.lockInfo);
-
-    const res = await kuberService.transferADA(
-      [wallet.addressBech32(environments.networkId)],
-      40
-    );
-    await pollTransaction(res.txId, registrationRes.lockInfo);
+    await registerDRepForWallet(wallet);
+    await transferAdaForWallet(wallet, 40);
 
     const tempDRepAuth = await createTempDRepAuth(page, wallet);
 

@@ -5,13 +5,11 @@ import {faker} from "@faker-js/faker";
 import {test} from "@fixtures/walletExtension";
 import {setAllureEpic} from "@helpers/allure";
 import {lovelaceToAda} from "@helpers/cardano";
-import convertBufferToHex from "@helpers/convertBufferToHex";
 import {ShelleyWallet} from "@helpers/crypto";
 import {createNewPageWithWallet} from "@helpers/page";
-import {pollTransaction, waitForTxConfirmation} from "@helpers/transaction";
+import {registerDRepForWallet, transferAdaForWallet, waitForTxConfirmation} from "@helpers/transaction";
 import GovernanceActionsPage from "@pages/governanceActionsPage";
 import {expect, Page} from "@playwright/test";
-import kuberService from "@services/kuberService";
 import {FilterOption, IProposal} from "@types";
 
 test.describe("Logged in DRep", () => {
@@ -57,17 +55,8 @@ test.describe("Temporary DReps", async () => {
     test.setTimeout(testInfo.timeout + 2 * environments.txTimeOut);
 
     const wallet = await ShelleyWallet.generate();
-    const registrationRes = await kuberService.dRepRegistration(
-      convertBufferToHex(wallet.stakeKey.private),
-      convertBufferToHex(wallet.stakeKey.pkh)
-    );
-    await pollTransaction(registrationRes.txId, registrationRes.lockInfo);
-
-    const res = await kuberService.transferADA(
-      [wallet.addressBech32(environments.networkId)],
-      40
-    );
-    await pollTransaction(res.txId, registrationRes.lockInfo);
+    await registerDRepForWallet(wallet);
+    await transferAdaForWallet(wallet, 40);
 
     const tempDRepAuth = await createTempDRepAuth(page, wallet);
 
