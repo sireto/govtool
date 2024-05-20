@@ -1,9 +1,18 @@
 import { downloadMetadata } from "@helpers/metadata";
-import { Download, Page } from "@playwright/test";
+import { Download, Page, expect } from "@playwright/test";
 import metadataBucketService from "@services/metadataBucketService";
 import { IGovernanceProposal } from "@types";
 import environments from "lib/constants/environments";
 import { withTxConfirmation } from "lib/transaction.decorator";
+const formErrors = {
+  proposalTitle: ["max-80-characters-error", "this-field-is-required-error"],
+  abstract: "this-field-is-required-error",
+  motivation: "this-field-is-required-error",
+  Rationale: "this-field-is-required-error",
+  receivingAddress: "invalid-bech32-address-error",
+  amount: ["only-number-is-allowed-error", "this-field-is-required-error"],
+  link: "invalid-url-error",
+};
 
 export default class ProposalSubmission {
   readonly registerBtn = this.page.getByTestId("register-button");
@@ -92,5 +101,45 @@ export default class ProposalSubmission {
           .fill(governanceProposal.extraContentLinks[i]);
       }
     }
+  }
+
+  async validateForm(governanceProposal: IGovernanceProposal) {
+    await this.fillupForm(governanceProposal);
+
+    for (const err of formErrors.proposalTitle) {
+      await expect(
+        this.page.getByTestId(err),
+        `Invalid title: ${governanceProposal.title}`
+      ).toBeHidden();
+    }
+
+    expect(
+      await this.abstractInput.textContent(),
+      "Abstract exceeded 500 characters"
+    ).toEqual(governanceProposal.abstract);
+    expect(
+      await this.rationaleInput.textContent(),
+      "rational exceeded 500 characters"
+    ).toEqual(governanceProposal.rationale);
+    expect(
+      await this.motivationInput.textContent(),
+      "motivation exceeded 500 characters"
+    ).toEqual(governanceProposal.motivation);
+    if (governanceProposal.type === "Treasury") {
+      await expect(
+        this.page.getByTestId(formErrors.receivingAddress),
+        `Invalid reeiving address: ${governanceProposal.receivingAddress}`
+      ).toBeHidden();
+      for (const err of formErrors.amount) {
+        await expect(
+          this.page.getByTestId(err),
+          `Invalid amount: ${governanceProposal.amount}`
+        ).toBeHidden();
+      }
+    }
+
+    await expect(this.page.getByTestId(formErrors.link)).toBeHidden();
+
+    await expect(this.continueBtn).toBeEnabled();
   }
 }
