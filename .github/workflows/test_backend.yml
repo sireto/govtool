@@ -4,11 +4,10 @@ on:
   push:
     paths:
       - .github/workflows/test_backend.yml
-  #     - govtool/backend
-  #     - tests/govtool-backend
+    branches:
+      - test
+      - chore/update-backend-workflow
 
-  schedule:
-    - cron: "0 0 * * *"
   workflow_dispatch:
     inputs:
       deployment:
@@ -44,14 +43,12 @@ jobs:
 
       - name: Upload report
         uses: actions/upload-artifact@v3
-        if: always()
         with:
           name: allure-results
           path: tests/govtool-backend/allure-results
 
   publish-report:
     runs-on: ubuntu-latest
-    if: always()
     needs: backend-tests
     steps:
       - uses: actions/checkout@v4
@@ -92,7 +89,6 @@ jobs:
 
       - name: Build report
         uses: simple-elf/allure-report-action@master
-        if: always()
         id: allure-report
         with:
           allure_results: allure-results
