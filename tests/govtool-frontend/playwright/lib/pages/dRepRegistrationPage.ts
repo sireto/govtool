@@ -127,17 +127,11 @@ export default class DRepRegistrationPage {
       })
       .all();
 
-    expect(nameErrors.length, `Valid name: ${name}`).toEqual(1);
+    expect(nameErrors.length).toEqual(1);
 
-    await expect(
-      this.page.getByTestId(formErrors.email),
-      `Valid email: ${email}`
-    ).toBeVisible();
+    await expect(this.page.getByTestId(formErrors.email)).toBeVisible();
 
-    expect(
-      await this.bioInput.textContent(),
-      "Bio less than 500 characters"
-    ).not.toEqual(bio);
+    expect(await this.bioInput.textContent()).not.toEqual(bio);
 
     await expect(this.page.getByTestId(formErrors.link)).toBeVisible();
 
