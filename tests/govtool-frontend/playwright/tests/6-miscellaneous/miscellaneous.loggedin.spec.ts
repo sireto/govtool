@@ -2,36 +2,33 @@ import {user01Wallet} from "@constants/staticWallets";
 import {test} from "@fixtures/walletExtension";
 import {expect} from "@playwright/test";
 import {setAllureEpic} from "@helpers/allure";
+import DRepDirectoryPage from "@pages/dRepDirectoryPage";
 
-test.use({ storageState: ".auth/user01.json", wallet: user01Wallet });
+test.use({storageState: ".auth/user01.json", wallet: user01Wallet});
 
 test.beforeEach(async () => {
-  await setAllureEpic("6. Miscellaneous");
+    await setAllureEpic("6. Miscellaneous");
 });
 // Skipped: No dRepId to validate
-test("6B. Provides error for invalid format", async ({ page }) => {
-  test.skip();
-  // invalid dRep delegation
-  const delegationPage = new DelegationPage(page);
-  await delegationPage.goto();
-  await delegationPage.delegateToDRep("Random values");
-  await expect(delegationPage.delegationErrorModal).toBeVisible();
+test("6B. Provides error for invalid format", async ({page}) => {
+    test.skip();
+    // invalid dRep delegation
+    const dRepDirectoryPage = new DRepDirectoryPage(page);
+    await dRepDirectoryPage.goto();
+    await dRepDirectoryPage.delegateToDRep("Random values");
+    await expect(dRepDirectoryPage.delegationErrorModal).toBeVisible();
 
-  // invalid dRep registration
-  const dRepRegistrationPage = new DRepRegistrationPage(page);
-  await dRepRegistrationPage.goto();
+    // await dRepRegistrationPage.urlInput.fill("abc");
+    // await expect(dRepRegistrationPage.urlInputError).toBeVisible();
 
-  // await dRepRegistrationPage.urlInput.fill("abc");
-  // await expect(dRepRegistrationPage.urlInputError).toBeVisible();
-
-  // await dRepRegistrationPage.hashInput.fill("abc");
-  // await expect(dRepRegistrationPage.hashInputError).toBeVisible();
+    // await dRepRegistrationPage.hashInput.fill("abc");
+    // await expect(dRepRegistrationPage.hashInputError).toBeVisible();
 });
 
 test("6D: Proper label and recognition of the testnet network", async ({
-  page,
-}) => {
-  await page.goto("/");
+                                                                           page,
+                                                                       }) => {
+    await page.goto("/");
 
-  await expect(page.getByText("testnet")).toBeVisible();
+    await expect(page.getByText("testnet")).toBeVisible();
 });
