@@ -2,27 +2,27 @@ name: Integration Test [Playwright]
 
 on:
   push:
+    paths:
+      - .github/workflows/test_integration_playwright.yml
     branches:
-      - enhancement/allure-report
+      - test
   workflow_dispatch:
     inputs:
-      logLevel:
-        description: "Log level"
+      deployment:
         required: true
-        default: "warning"
         type: choice
+        default: "govtool.cardanoapi.io"
         options:
-          - info
-          - warning
-          - debug
+          - "sanchogov.tools"
+          - "staging.govtool.byron.network"
+          - "govtool.cardanoapi.io"
   workflow_run:
-    workflows: ["Build and deploy GovTool test stack"]
+    workflows: ["Build and deploy GovTool to TEST server"]
     types: [completed]
 
 jobs:
   integration-tests:
     runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'push' }}
     defaults:
       run:
         working-directory: tests/govtool-frontend/playwright
@@ -61,8 +61,8 @@ jobs:
           path: tests/govtool-frontend/playwright/allure-results
 
     env:
-      HOST_URL: ${{vars.HOST_URL}}
-      API_URL: ${{vars.HOST_URL}}/api
+      HOST_URL: https://${{inputs.deployment ||  'govtool.cardanoapi.io' }}
+      API_URL: https://${{inputs.deployment ||  'govtool.cardanoapi.io' }}/api
       DOCS_URL: ${{ vars.DOCS_URL }}
       FAUCET_API_URL: ${{ vars.FAUCET_API_URL }}
       FAUCET_API_KEY: ${{secrets.FAUCET_API_KEY}}
