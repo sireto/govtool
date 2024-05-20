@@ -1,16 +1,18 @@
-import {dRep01Wallet, user01Wallet} from "@constants/staticWallets";
-import {test} from "@fixtures/walletExtension";
-import {ShelleyWallet} from "@helpers/crypto";
-import {isMobile} from "@helpers/mobile";
+import { dRep01Wallet, user01Wallet } from "@constants/staticWallets";
+import { test } from "@fixtures/walletExtension";
+import { ShelleyWallet } from "@helpers/crypto";
+import { isMobile } from "@helpers/mobile";
 import extractDRepFromWallet from "@helpers/shellyWallet";
 import DRepDirectoryPage from "@pages/dRepDirectoryPage";
-import {expect} from "@playwright/test";
-import {setAllureEpic} from "@helpers/allure";
+import { expect } from "@playwright/test";
+import { setAllureEpic } from "@helpers/allure";
 
 test.use({ storageState: ".auth/user01.json", wallet: user01Wallet });
+
 test.beforeEach(async () => {
-    await setAllureEpic("2. Delegation");
+  await setAllureEpic("2. Delegation");
 });
+
 test("2B. Should access DRep Directory page", async ({ page }) => {
   await page.goto("/");
 

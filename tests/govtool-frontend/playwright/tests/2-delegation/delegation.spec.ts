@@ -1,11 +1,11 @@
-import {dRep01Wallet} from "@constants/staticWallets";
+import { dRep01Wallet } from "@constants/staticWallets";
 import DRepDirectoryPage from "@pages/dRepDirectoryPage";
-import {expect, test} from "@playwright/test";
-import {DRepStatus} from "@types";
-import {setAllureEpic} from "@helpers/allure";
+import { expect, test } from "@playwright/test";
+import { DRepStatus } from "@types";
+import { setAllureEpic } from "@helpers/allure";
 
 test.beforeEach(async () => {
-    await setAllureEpic("2. Delegation");
+  await setAllureEpic("2. Delegation");
 });
 
 test("2J. Should search by DRep id", async ({ page }) => {

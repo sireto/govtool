@@ -1,9 +1,9 @@
-import {user01Wallet} from "@constants/staticWallets";
-import {faker} from "@faker-js/faker";
-import {test} from "@fixtures/walletExtension";
-import {setAllureEpic} from "@helpers/allure";
+import { user01Wallet } from "@constants/staticWallets";
+import { faker } from "@faker-js/faker";
+import { test } from "@fixtures/walletExtension";
+import { setAllureEpic } from "@helpers/allure";
 import DRepRegistrationPage from "@pages/dRepRegistrationPage";
-import {expect} from "@playwright/test";
+import { expect } from "@playwright/test";
 
 test.use({
   storageState: ".auth/user01.json",

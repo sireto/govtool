@@ -1,9 +1,9 @@
 import environments from "@constants/environments";
-import {dRepWallets} from "@constants/staticWallets";
-import {pollTransaction} from "@helpers/transaction";
-import {expect, test as setup} from "@playwright/test";
+import { dRepWallets } from "@constants/staticWallets";
+import { pollTransaction } from "@helpers/transaction";
+import { expect, test as setup } from "@playwright/test";
 import kuberService from "@services/kuberService";
-import {setAllureEpic, setAllureStory} from "@helpers/allure";
+import { setAllureEpic, setAllureStory } from "@helpers/allure";
 
 setup.describe.configure({ timeout: environments.txTimeOut });
 
@@ -30,4 +30,3 @@ dRepWallets.forEach((wallet) => {
     }
   });
 });
-

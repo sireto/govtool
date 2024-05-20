@@ -20,7 +20,7 @@ test.describe("Should create a governance action purposal", () => {
     await setAllureEpic("7. Proposal submission");
     test.setTimeout(testInfo.timeout + environments.txTimeOut);
     wallet = await ShelleyWallet.generate();
-    transferAdaForWallet(wallet, 1000);
+    await transferAdaForWallet(wallet, 1000);
     const tempUserAuth = await createTempUserAuth(page, wallet);
     const governancePage = await createNewPageWithWallet(browser, {
       storageState: tempUserAuth,

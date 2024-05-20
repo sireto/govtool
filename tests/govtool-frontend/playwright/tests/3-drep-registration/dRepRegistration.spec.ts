@@ -1,5 +1,5 @@
-import {setAllureEpic} from "@helpers/allure";
-import {expect, test} from "@playwright/test";
+import { setAllureEpic } from "@helpers/allure";
+import { expect, test } from "@playwright/test";
 
 test.beforeEach(async () => {
   await setAllureEpic("3. DRep registration");

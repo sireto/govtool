@@ -17,10 +17,6 @@ test.beforeEach(async () => {
   await setAllureEpic("2. Delegation");
 });
 
-test.beforeEach(async () => {
-  await setAllureEpic("2. Delegation");
-});
-
 test("2L. Should copy DRepId", async ({ page, context }) => {
   await context.grantPermissions(["clipboard-read", "clipboard-write"]);
 

@@ -1,14 +1,18 @@
 import environments from "@constants/environments";
-import {dRep01Wallet} from "@constants/staticWallets";
-import {createTempDRepAuth} from "@datafactory/createAuth";
-import {test} from "@fixtures/walletExtension";
-import {setAllureEpic} from "@helpers/allure";
-import {ShelleyWallet} from "@helpers/crypto";
-import {createNewPageWithWallet} from "@helpers/page";
-import {registerDRepForWallet, transferAdaForWallet, waitForTxConfirmation} from "@helpers/transaction";
+import { dRep01Wallet } from "@constants/staticWallets";
+import { createTempDRepAuth } from "@datafactory/createAuth";
+import { test } from "@fixtures/walletExtension";
+import { setAllureEpic } from "@helpers/allure";
+import { ShelleyWallet } from "@helpers/crypto";
+import { createNewPageWithWallet } from "@helpers/page";
+import {
+  registerDRepForWallet,
+  transferAdaForWallet,
+  waitForTxConfirmation,
+} from "@helpers/transaction";
 import GovernanceActionDetailsPage from "@pages/governanceActionDetailsPage";
 import GovernanceActionsPage from "@pages/governanceActionsPage";
-import {expect} from "@playwright/test";
+import { expect } from "@playwright/test";
 import kuberService from "@services/kuberService";
 
 test.beforeEach(async () => {
@@ -62,7 +66,7 @@ test.describe("Proposal checks", () => {
 
   // Skipped: No url/hash input to validate
   test("5D. Should validate proposal voting", async () => {
-      test.skip();
+    test.skip();
     // const invalidURLs = ["testdotcom", "https://testdotcom", "https://test.c"];
     // invalidURLs.forEach(async (url) => {
     //   govActionDetailsPage.urlInput.fill(url);

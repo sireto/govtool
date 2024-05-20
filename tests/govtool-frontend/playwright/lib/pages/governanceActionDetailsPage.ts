@@ -1,8 +1,8 @@
 import environments from "@constants/environments";
-import {downloadMetadata} from "@helpers/metadata";
-import {Download, Page} from "@playwright/test";
+import { downloadMetadata } from "@helpers/metadata";
+import { Download, Page } from "@playwright/test";
 import metadataBucketService from "@services/metadataBucketService";
-import {withTxConfirmation} from "lib/transaction.decorator";
+import { withTxConfirmation } from "lib/transaction.decorator";
 
 export default class GovernanceActionDetailsPage {
   readonly voteBtn = this.page.getByTestId("vote-button");

@@ -1,15 +1,19 @@
 import environments from "@constants/environments";
-import {dRep01Wallet} from "@constants/staticWallets";
-import {createTempDRepAuth} from "@datafactory/createAuth";
-import {faker} from "@faker-js/faker";
-import {test} from "@fixtures/walletExtension";
-import {setAllureEpic} from "@helpers/allure";
-import {ShelleyWallet} from "@helpers/crypto";
-import {createNewPageWithWallet} from "@helpers/page";
-import {registerDRepForWallet, transferAdaForWallet, waitForTxConfirmation} from "@helpers/transaction";
+import { dRep01Wallet } from "@constants/staticWallets";
+import { createTempDRepAuth } from "@datafactory/createAuth";
+import { faker } from "@faker-js/faker";
+import { test } from "@fixtures/walletExtension";
+import { setAllureEpic } from "@helpers/allure";
+import { ShelleyWallet } from "@helpers/crypto";
+import { createNewPageWithWallet } from "@helpers/page";
+import {
+  registerDRepForWallet,
+  transferAdaForWallet,
+  waitForTxConfirmation,
+} from "@helpers/transaction";
 import DRepRegistrationPage from "@pages/dRepRegistrationPage";
 import GovernanceActionsPage from "@pages/governanceActionsPage";
-import {expect} from "@playwright/test";
+import { expect } from "@playwright/test";
 import * as crypto from "crypto";
 
 test.beforeEach(async () => {
