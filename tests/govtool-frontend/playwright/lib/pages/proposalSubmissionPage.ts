@@ -1,9 +1,12 @@
+import { faker } from "@faker-js/faker";
+import { expectWithInfo } from "@helpers/exceptionHandler";
+import { Logger } from "@helpers/logger";
 import { downloadMetadata } from "@helpers/metadata";
+import { invalid } from "@mock/index";
 import { Download, Page, expect } from "@playwright/test";
 import metadataBucketService from "@services/metadataBucketService";
-import { IGovernanceProposal, ProposalType } from "@types";
+import { IProposalForm, ProposalType } from "@types";
 import environments from "lib/constants/environments";
-import { withTxConfirmation } from "lib/transaction.decorator";
 const formErrors = {
   proposalTitle: ["max-80-characters-error", "this-field-is-required-error"],
   abstract: "this-field-is-required-error",
@@ -14,10 +17,13 @@ const formErrors = {
   link: "invalid-url-error",
 };
 
-export default class ProposalSubmission {
+export default class ProposalSubmissionPage {
   // modals
   readonly registrationSuccessModal = this.page.getByTestId(
     "create-governance-action-submitted-modal"
+  );
+  readonly registrationErrorModal = this.page.getByTestId(
+    "create-governance-action-error-modal"
   );
 
   // buttons
@@ -54,8 +60,7 @@ export default class ProposalSubmission {
     await this.continueBtn.click();
   }
 
-  @withTxConfirmation
-  async register(governanceProposal: IGovernanceProposal) {
+  async register(governanceProposal: IProposalForm) {
     await this.fillupForm(governanceProposal);
 
     await this.continueBtn.click();
@@ -81,7 +86,7 @@ export default class ProposalSubmission {
     return downloadMetadata(download);
   }
 
-  async fillupForm(governanceProposal: IGovernanceProposal) {
+  async fillupForm(governanceProposal: IProposalForm) {
     await this.titleInput.fill(governanceProposal.title);
     await this.abstractInput.fill(governanceProposal.abstract);
     await this.motivationInput.fill(governanceProposal.motivation);
@@ -101,7 +106,7 @@ export default class ProposalSubmission {
             .getByRole("button", {
               name: "+ Add link",
             })
-            .click();
+            .click(); // BUG
         }
         await this.linkInput
           .nth(i)
@@ -110,14 +115,11 @@ export default class ProposalSubmission {
     }
   }
 
-  async validateForm(governanceProposal: IGovernanceProposal) {
+  async validateForm(governanceProposal: IProposalForm) {
     await this.fillupForm(governanceProposal);
 
     for (const err of formErrors.proposalTitle) {
-      await expect(
-        this.page.getByTestId(err),
-        `Invalid title: ${governanceProposal.title}`
-      ).toBeHidden();
+      await expect(this.page.getByTestId(err)).toBeHidden();
     }
 
     expect(await this.abstractInput.textContent()).toEqual(
@@ -147,7 +149,7 @@ export default class ProposalSubmission {
     await expect(this.continueBtn).toBeEnabled();
   }
 
-  async inValidateForm(governanceProposal: IGovernanceProposal) {
+  async inValidateForm(governanceProposal: IProposalForm) {
     await this.fillupForm(governanceProposal);
 
     function convertTestIdToText(testId: string) {
@@ -174,34 +176,100 @@ export default class ProposalSubmission {
       this.page,
       proposalTitlePattern
     );
-    expect(proposalTitleErrors.length).toEqual(1);
 
+    expectWithInfo(
+      async () => expect(proposalTitleErrors.length).toEqual(1),
+      `valid title: ${governanceProposal.title}`
+    );
     if (governanceProposal.type === "Treasury") {
       const receiverAddressErrors = await getErrorsByPattern(
         this.page,
         new RegExp(convertTestIdToText(formErrors.receivingAddress))
       );
-      expect(receiverAddressErrors.length).toEqual(1);
+
+      expectWithInfo(
+        async () => expect(receiverAddressErrors.length).toEqual(1),
+        `valid address: ${governanceProposal.receivingAddress}`
+      );
 
       const amountPattern = generateRegexPattern(formErrors.amount);
       const amountErrors = await getErrorsByPattern(this.page, amountPattern);
-      expect(amountErrors.length).toEqual(1);
+
+      expectWithInfo(
+        async () => expect(amountErrors.length).toEqual(1),
+        `valid amount: ${governanceProposal.amount}`
+      );
     }
 
-    expect(await this.abstractInput.textContent()).not.toEqual(
-      governanceProposal.abstract
+    expectWithInfo(
+      async () =>
+        expect(await this.abstractInput.textContent()).not.toEqual(
+          governanceProposal.abstract
+        ),
+      `valid abstract: ${governanceProposal.abstract}`
     );
 
-    expect(await this.motivationInput.textContent()).not.toEqual(
-      governanceProposal.motivation
+    expectWithInfo(
+      async () =>
+        expect(await this.abstractInput.textContent()).not.toEqual(
+          governanceProposal.motivation
+        ),
+      `valid motivation: ${governanceProposal.motivation}`
     );
 
-    expect(await this.rationaleInput.textContent()).not.toEqual(
-      governanceProposal.rationale
+    expectWithInfo(
+      async () =>
+        expect(await this.abstractInput.textContent()).not.toEqual(
+          governanceProposal.rationale
+        ),
+      `valid rationale: ${governanceProposal.rationale}`
     );
 
-    await expect(this.page.getByTestId(formErrors.link)).toBeVisible();
+    expectWithInfo(
+      async () =>
+        await expect(this.page.getByTestId(formErrors.link)).toBeVisible(),
+      `valid link: ${governanceProposal.extraContentLinks[0]}`
+    );
 
     await expect(this.continueBtn).toBeDisabled();
+  }
+
+  generateValidProposalFormFields(
+    proposalType: ProposalType,
+    receivingAddress?: string
+  ) {
+    const proposal: IProposalForm = {
+      title: faker.lorem.sentence(6),
+      abstract: faker.lorem.paragraph(2),
+      motivation: faker.lorem.paragraphs(2),
+      rationale: faker.lorem.paragraphs(2),
+
+      extraContentLinks: [faker.internet.url()],
+      type: proposalType,
+    };
+    if (proposalType === ProposalType.treasury) {
+      (proposal.receivingAddress = receivingAddress),
+        (proposal.amount = faker.number
+          .int({ min: 100, max: 1000 })
+          .toString());
+    }
+    return proposal;
+  }
+
+  generateInValidProposalFormFields(proposalType: ProposalType) {
+    const proposal: IProposalForm = {
+      title: invalid.proposalTitle(),
+      abstract: invalid.paragraph(),
+      motivation: invalid.paragraph(),
+      rationale: invalid.paragraph(),
+
+      extraContentLinks: [invalid.url()],
+      type: proposalType,
+    };
+    if (proposalType === ProposalType.treasury) {
+      (proposal.receivingAddress = faker.location.streetAddress()),
+        (proposal.amount = invalid.amount());
+    }
+    return proposal;
   }
 }

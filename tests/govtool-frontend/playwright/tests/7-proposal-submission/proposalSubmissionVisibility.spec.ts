@@ -1,7 +1,7 @@
 import { user01Wallet } from "@constants/staticWallets";
 import { test } from "@fixtures/walletExtension";
 import { setAllureEpic } from "@helpers/allure";
-import ProposalSubmission from "@pages/proposalSubmissionPage";
+import ProposalSubmissionPage from "@pages/proposalSubmissionPage";
 import { expect } from "@playwright/test";
 import { ProposalType } from "@types";
 
@@ -21,23 +21,22 @@ test("7B. Should access proposal submission page", async ({ page }) => {
 });
 
 test("7C. Should list governance action types", async ({ page }) => {
-  const proposalSubmissionPage = new ProposalSubmission(page);
+  const proposalSubmissionPage = new ProposalSubmissionPage(page);
   await proposalSubmissionPage.goto();
 
   await expect(proposalSubmissionPage.infoRadioButton).toBeVisible();
   await expect(proposalSubmissionPage.treasuryRadioButton).toBeVisible();
 });
+
 test.describe("Verify Proposal form", () => {
-  const type: Array<ProposalType> = ["Info", "Treasury"];
-  const buttons = ["infoRadioButton", "treasuryRadioButton"];
-  for (let j = 0; j < type.length; j++) {
-    test(`7D.${j + 1}: Verify ${type[j].toLocaleLowerCase()} proposal form`, async ({
+  Object.values(ProposalType).map((type: ProposalType, index) => {
+    test(`7D.${index + 1}: Verify ${type.toLocaleLowerCase()} proposal form`, async ({
       page,
     }) => {
-      const proposalSubmissionPage = new ProposalSubmission(page);
+      const proposalSubmissionPage = new ProposalSubmissionPage(page);
       await proposalSubmissionPage.goto();
 
-      await proposalSubmissionPage[buttons[j]].click();
+      await page.getByTestId(`${type}-radio`).click();
       await proposalSubmissionPage.continueBtn.click();
 
       await expect(proposalSubmissionPage.titleInput).toBeVisible();
@@ -45,7 +44,7 @@ test.describe("Verify Proposal form", () => {
       await expect(proposalSubmissionPage.motivationInput).toBeVisible();
       await expect(proposalSubmissionPage.rationaleInput).toBeVisible();
       await expect(proposalSubmissionPage.addLinkBtn).toBeVisible();
-      if (type[j] === "Treasury") {
+      if (type === ProposalType.treasury) {
         await expect(
           proposalSubmissionPage.receivingAddressInput
         ).toBeVisible();
@@ -53,5 +52,5 @@ test.describe("Verify Proposal form", () => {
         await expect(proposalSubmissionPage.amountInput).toBeVisible();
       }
     });
-  }
+  });
 });
