@@ -84,22 +84,20 @@ test.describe("Change delegation", () => {
 });
 
 test.describe("Delegate to myself", () => {
-  let dRepPage: Page;
-  let wallet: StaticWallet;
+  test("2E. Should register as Sole voter", async ({
+    page,
+    browser,
+  }, testInfo) => {
+    test.setTimeout(testInfo.timeout + environments.txTimeOut);
 
-  test.beforeEach(async ({ page, browser }, testInfo) => {
-    wallet = await walletManager.popWallet("registerDRep");
+    const wallet = await walletManager.popWallet("registerDRep");
 
     const dRepAuth = await createTempDRepAuth(page, wallet);
-    dRepPage = await createNewPageWithWallet(browser, {
+    const dRepPage = await createNewPageWithWallet(browser, {
       storageState: dRepAuth,
       wallet,
       enableStakeSigning: true,
     });
-  });
-
-  test("2E. Should register as Sole voter", async ({ page }, testInfo) => {
-    test.setTimeout(testInfo.timeout + environments.txTimeOut);
 
     const dRepId = wallet.dRepId;
 
@@ -114,7 +112,7 @@ test.describe("Delegate to myself", () => {
 
     // Checks in dashboard
     // BUG
-    await expect(page.getByText(dRepId)).toHaveText(dRepId);
+    await expect(dRepPage.getByText(dRepId)).toHaveText(dRepId);
 
     // Checks in dRep directory
     await expect(dRepPage.getByText("You are a Direct Voter")).toBeVisible();
@@ -125,8 +123,19 @@ test.describe("Delegate to myself", () => {
     );
   });
 
-  test("2S. Should retire as a Direct Voter on delegating to another DRep", async ({}, testInfo) => {
+  test("2S. Should retire as a Direct Voter on delegating to another DRep", async ({
+    page,
+    browser,
+  }, testInfo) => {
     test.setTimeout(testInfo.timeout + environments.txTimeOut);
+    const wallet = await walletManager.popWallet("registerDRep");
+
+    const dRepAuth = await createTempDRepAuth(page, wallet);
+    const dRepPage = await createNewPageWithWallet(browser, {
+      storageState: dRepAuth,
+      wallet,
+      enableStakeSigning: true,
+    });
 
     await dRepPage.goto("/");
     await dRepPage.getByTestId("register-as-sole-voter-button").click();
