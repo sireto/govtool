@@ -16,6 +16,8 @@ async function generateWallets(num: number) {
 async function globalSetup() {
   const registeredDRepWallets = await generateWallets(9);
   const registerDRepWallets = await generateWallets(9);
+  const proposalSubmissionWallets = await generateWallets(1);
+  const adaHolderWallets = await generateWallets(2);
 
   // faucet setup
   const res = await loadAmountFromFaucet(faucetWallet.address);
@@ -25,6 +27,8 @@ async function globalSetup() {
   const initializeRes = await kuberService.initializeWallets([
     ...registeredDRepWallets,
     ...registerDRepWallets,
+    ...proposalSubmissionWallets,
+    ...adaHolderWallets,
   ]);
   await pollTransaction(initializeRes.txId, initializeRes.lockInfo);
 
@@ -35,15 +39,26 @@ async function globalSetup() {
   await pollTransaction(registrationRes.txId, registrationRes.lockInfo);
 
   // transfer 600 ADA for dRep registration
-  const amountOutputs = registerDRepWallets.map((wallet) => {
+  const dRepAmountOutputs = registerDRepWallets.map((wallet) => {
     return { address: wallet.address, value: `${600}A` };
   });
-  const transferRes = await kuberService.multipleTransferADA(amountOutputs);
+  const proposalAmountOutput = proposalSubmissionWallets.map((wallet) => {
+    return { address: wallet.address, value: `${51_000}A` };
+  });
+  const transferRes = await kuberService.multipleTransferADA([
+    ...dRepAmountOutputs,
+    ...proposalAmountOutput,
+  ]);
   await pollTransaction(transferRes.txId, transferRes.lockInfo);
 
   // save to file
   await walletManager.writeWallets(registeredDRepWallets, "registeredDRep");
   await walletManager.writeWallets(registerDRepWallets, "registerDRep");
+  await walletManager.writeWallets(
+    proposalSubmissionWallets,
+    "proposalSubmission"
+  );
+  await walletManager.writeWallets(adaHolderWallets, "adaHolder");
 }
 
 export default globalSetup;
