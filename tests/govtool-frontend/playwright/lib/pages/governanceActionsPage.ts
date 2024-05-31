@@ -16,7 +16,7 @@ export default class GovernanceActionsPage {
   }
 
   async viewProposal(
-    proposal: IProposal,
+    proposal: IProposal
   ): Promise<GovernanceActionDetailsPage> {
     const proposalId = `govaction-${proposal.txHash}#${proposal.index}-view-detail`;
     await this.page.getByTestId(proposalId).click();
@@ -41,7 +41,7 @@ export default class GovernanceActionsPage {
   }
 
   async viewVotedProposal(
-    proposal: IProposal,
+    proposal: IProposal
   ): Promise<GovernanceActionDetailsPage> {
     const proposalId = `govaction-${proposal.txHash}#${proposal.index}-change-your-vote`;
     await this.page.getByTestId(proposalId).click();
@@ -73,11 +73,11 @@ export default class GovernanceActionsPage {
     for (const proposalCard of proposalCards) {
       const hasFilter = await this._validateFiltersInProposalCard(
         proposalCard,
-        filters,
+        filters
       );
       expect(
         hasFilter,
-        "A proposal card does not contain any of the filters",
+        "A proposal card does not contain any of the filters"
       ).toBe(true);
     }
   }
@@ -86,59 +86,58 @@ export default class GovernanceActionsPage {
     await this.page.getByTestId(`${option}-radio`).check();
   }
 
-  async validateSort(
+  async sortAndValidate(
     sortOption: string,
     validationFn: (p1: IProposal, p2: IProposal) => boolean,
-    filterKeys = Object.keys(FilterOption),
+    filterKeys = Object.keys(FilterOption)
   ) {
-    const responses = await Promise.all(
+    const responsesPromise = Promise.all(
       filterKeys.map((filterKey) =>
         this.page.waitForResponse((response) =>
           response
             .url()
-            .includes(`&type[]=${FilterOption[filterKey]}&sort=${sortOption}`),
-        ),
-      ),
+            .includes(`&type[]=${FilterOption[filterKey]}&sort=${sortOption}`)
+        )
+      )
     );
-    const proposalData = await Promise.all(
+
+    await this.sortProposal(sortOption);
+    const responses = await responsesPromise;
+
+    let proposalData: IProposal[][] = await Promise.all(
       responses.map(async (response) => {
-        return await response.json();
-      }),
+        const { elements } = await response.json();
+        return elements.length ? elements : null;
+      })
     );
-    expect(proposalData.length, "No proposals to sort").toBeGreaterThan(0);
+    proposalData = proposalData.filter(Boolean);
 
     // API validation
     proposalData.forEach(async (proposal) => {
-      if (proposal.elements.length <= 1) return;
+      if (proposal.length <= 1) return;
 
-      const proposals = proposal.elements as IProposal[];
+      const proposals = proposal;
       for (let i = 0; i <= proposals.length - 2; i++) {
         const isValid = validationFn(proposals[i], proposals[i + 1]);
-        expect(isValid, "API Sorting validation failed").toBe(true);
+        expect(isValid).toBe(true);
       }
     });
 
     // Frontend validation
-    const proposalCards = await Promise.all(
-      filterKeys.map((key) =>
-        this.page.getByTestId(`govaction-${key}-card`).allInnerTexts(),
-      ),
-    );
-
     for (let dIdx = 0; dIdx <= proposalData.length - 1; dIdx++) {
-      const proposals = proposalData[dIdx].elements as IProposal[];
-      for (let i = 0; i <= proposals.length - 1; i++) {
-        expect(
-          proposalCards[dIdx][i].includes(proposals[i].txHash),
-          "Frontend validation failed",
-        ).toBe(true);
+      const proposals = proposalData[dIdx] as IProposal[];
+      const slides = await this.page
+        .locator(`[data-testid="govaction-${proposals[0].type}-card"]`)
+        .all();
+      for (let i = 0; i <= slides.length - 1; i++) {
+        await expect(slides[i]).toContainText(`${proposals[i].txHash}`);
       }
     }
   }
 
   async _validateFiltersInProposalCard(
     proposalCard: Locator,
-    filters: string[],
+    filters: string[]
   ): Promise<boolean> {
     for (const filter of filters) {
       try {

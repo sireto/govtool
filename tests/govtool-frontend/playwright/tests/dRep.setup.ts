@@ -1,43 +1,30 @@
 import environments from "@constants/environments";
 import { dRepWallets } from "@constants/staticWallets";
+import { setAllureEpic, setAllureStory } from "@helpers/allure";
 import { pollTransaction } from "@helpers/transaction";
 import { expect, test as setup } from "@playwright/test";
 import kuberService from "@services/kuberService";
-import { Logger } from "../../cypress/lib/logger/logger";
-import fetch = require("node-fetch");
-
-const dRepInfo = require("../lib/_mock/dRepInfo.json");
 
 setup.describe.configure({ timeout: environments.txTimeOut });
 
-dRepWallets.forEach((wallet) => {
-  setup(`Register DRep of wallet: ${wallet.address}`, async () => {
-    try {
-      const res = await kuberService.dRepRegistration(
-        wallet.stake.private,
-        wallet.stake.pkh,
-      );
-
-      await pollTransaction(res.txId, res.lockInfo);
-    } catch (err) {
-      if (err.status === 400) {
-        expect(true, "DRep already registered").toBeTruthy();
-      } else {
-        throw err;
-      }
-    }
-  });
+setup.beforeEach(async () => {
+  await setAllureEpic("Setup");
+  await setAllureStory("Register DRep");
 });
 
-setup("Setup dRep metadata", async () => {
+setup("Register DRep of static wallets", async () => {
   try {
-    const res = await fetch(`${environments.metadataBucketUrl}/Test_dRep`, {
-      method: "PUT",
-      body: JSON.stringify(dRepInfo),
-    });
-    Logger.success("Uploaded dRep metadata to bucket");
+    const res = await kuberService.multipleDRepRegistration(dRepWallets);
+
+    await pollTransaction(res.txId, res.lockInfo);
   } catch (err) {
-    Logger.fail(`Failed to upload dRep metadata: ${err}`);
-    throw err;
+    if (
+      err.status === 400 &&
+      err.message.includes("ConwayDRepAlreadyRegistered")
+    ) {
+      expect(true, "DRep already registered").toBeTruthy();
+    } else {
+      throw err;
+    }
   }
 });

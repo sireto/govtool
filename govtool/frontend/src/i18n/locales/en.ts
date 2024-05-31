@@ -104,7 +104,7 @@ export const en = {
             "Your Voting Power of ₳<strong>{{votingPower}}</strong> can be used to vote.",
           register: "Register",
           registerDescription:
-            "Vote on Governance Actions using your own voting power of ₳<strong>{{votingPower}}</strong>.",
+            "Register to Vote on Governance Actions using your own voting power of ₳<strong>{{votingPower}}</strong>.",
           registerTitle: "Become a Direct Voter",
           reRegister: "Re-register",
           registration: "Direct Voter Registration",
@@ -265,7 +265,7 @@ export const en = {
       myDelegation: "You have delegated <strong>₳ {{ada}}</strong> to:",
       myDelegationToYourself:
         "You have delegated <strong>₳ {{ada}}</strong> to yourself:",
-      myDRep: "This is your DRep profile",
+      myDRep: "You have delegated ₳{{ada}} to this DRep.",
       listTitle: "Find a DRep",
       noConfidenceDefaultDescription:
         "Select this to signal no confidence in the current constitutional committee by voting NO on every proposal and voting YES to no confidence proposals",

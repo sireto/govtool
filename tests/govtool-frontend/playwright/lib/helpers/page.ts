@@ -1,17 +1,17 @@
 import { importWallet } from "@fixtures/importWallet";
 import loadDemosExtension from "@fixtures/loadExtension";
 import { Browser, Page } from "@playwright/test";
-import { ShelleyWallet } from "./crypto";
+import { StaticWallet } from "@types";
 
 interface BrowserConfig {
   storageState: string;
-  wallet: ShelleyWallet;
+  wallet: StaticWallet;
   enableStakeSigning?: boolean;
 }
 
 export async function createNewPageWithWallet(
   browser: Browser,
-  { storageState, wallet, enableStakeSigning }: BrowserConfig,
+  { storageState, wallet, enableStakeSigning }: BrowserConfig
 ): Promise<Page> {
   const context = await browser.newContext({
     storageState: storageState,
@@ -19,7 +19,7 @@ export async function createNewPageWithWallet(
   const newPage = await context.newPage();
 
   await loadDemosExtension(newPage, enableStakeSigning);
-  await importWallet(newPage, wallet.json());
+  await importWallet(newPage, wallet);
 
   return newPage;
 }

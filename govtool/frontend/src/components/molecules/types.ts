@@ -6,6 +6,7 @@ export type LinkWithIconProps = {
   icon?: JSX.Element;
   sx?: SxProps;
   cutWithEllipsis?: boolean;
+  dataTestId?: string;
 };
 
 export type StepProps = {
@@ -29,6 +30,7 @@ export type EmptyStateGovernanceActionsCategoryProps = {
 
 export type AutomatedVotingCardProps = {
   description: string;
+  dataTestId?: string;
   inProgress?: boolean;
   isConnected?: boolean;
   isSelected?: boolean;

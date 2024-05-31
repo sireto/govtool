@@ -1,12 +1,10 @@
 import { faucetWallet } from "@constants/staticWallets";
-import { ShelleyWallet } from "@helpers/crypto";
-import { KuberValue } from "@types";
+import { KuberValue, StaticWallet } from "@types";
 import * as blake from "blakejs";
 import environments from "lib/constants/environments";
 import { LockInterceptor, LockInterceptorInfo } from "lib/lockInterceptor";
 import fetch, { BodyInit, RequestInit } from "node-fetch";
 import { cborxDecoder, cborxEncoder } from "../helpers/cborEncodeDecode";
-import convertBufferToHex from "../helpers/convertBufferToHex";
 import { Logger } from "./../../../cypress/lib/logger/logger";
 
 type CertificateType = "registerstake" | "registerdrep" | "deregisterdrep";
@@ -77,28 +75,31 @@ class Kuber {
     const signedTx = this.signTx(tx);
     const signedTxBody = Uint8Array.from(cborxEncoder.encode(tx));
     const lockId = Buffer.from(
-      blake.blake2b(signedTxBody, undefined, 32),
+      blake.blake2b(signedTxBody, undefined, 32)
     ).toString("hex");
     const submitTxCallback = async () => {
       return this.submitTx(signedTx, lockId);
     };
-    return LockInterceptor.intercept(this.walletAddr, submitTxCallback, lockId);
+    return LockInterceptor.intercept<TxSubmitResponse>(
+      this.walletAddr,
+      submitTxCallback
+    );
   }
 
   async submitTx(signedTx: any, lockId?: string) {
     Logger.info(
-      `Submitting tx: ${JSON.stringify({ lock_id: lockId, tx: signedTx })}`,
+      `Submitting tx: ${JSON.stringify({ lock_id: lockId, tx: signedTx })}`
     );
 
     const res = (await callKuber(
       `/api/${this.version}/tx?submit=true`,
       "POST",
-      JSON.stringify(signedTx),
+      JSON.stringify(signedTx)
     )) as any;
     let decodedTx = cborxDecoder.decode(Buffer.from(res.cborHex, "hex"));
     const submittedTxBody = Uint8Array.from(cborxEncoder.encode(decodedTx[0]));
     const submittedTxHash = Buffer.from(
-      blake.blake2b(submittedTxBody, undefined, 32),
+      blake.blake2b(submittedTxBody, undefined, 32)
     ).toString("hex");
 
     Logger.success(`Tx submitted: ${submittedTxHash}`);
@@ -110,41 +111,6 @@ class Kuber {
 }
 
 const kuberService = {
-  initializeWallets: (
-    senderAddress: string,
-    signingKey: string,
-    wallets: ShelleyWallet[],
-  ) => {
-    const kuber = new Kuber(senderAddress, signingKey);
-    const outputs = [];
-    const stakes = [];
-    const certificates = [];
-    for (let i = 0; i < wallets.length; i++) {
-      const wallet = wallets[i];
-      const address = wallet.addressBech32(environments.networkId);
-      outputs.push({
-        address: address,
-        value: 0,
-      });
-      stakes.push({
-        type: "PaymentSigningKeyShelley_ed25519",
-        description: "Payment Signing Key",
-        cborHex: "5820" + convertBufferToHex(wallet.stakeKey.private),
-      });
-      certificates.push(
-        Kuber.generateCert(
-          "registerstake",
-          convertBufferToHex(wallet.stakeKey.pkh),
-        ),
-      );
-    }
-    return kuber.signAndSubmitTx({
-      selections: [...stakes],
-      outputs,
-      certificates,
-    });
-  },
-
   submitTransaction(tx: any) {
     return fetch(config.apiUrl + "/api/v1/tx/submit", {
       method: "POST",
@@ -163,6 +129,32 @@ const kuberService = {
       redirect: "follow",
     });
   },
+  // register stake and outputs 20A
+  initializeWallets: (wallets: StaticWallet[]) => {
+    const kuber = new Kuber(faucetWallet.address, faucetWallet.payment.private);
+    const outputs = [];
+    const stakes = [];
+    const certificates = [];
+    for (let i = 0; i < wallets.length; i++) {
+      outputs.push({
+        address: wallets[i].address,
+        value: `${20}A`,
+      });
+      stakes.push({
+        type: "PaymentSigningKeyShelley_ed25519",
+        description: "Payment Signing Key",
+        cborHex: "5820" + wallets[i].stake.private,
+      });
+      certificates.push(
+        Kuber.generateCert("registerstake", wallets[i].stake.pkh)
+      );
+    }
+    return kuber.signAndSubmitTx({
+      selections: [...stakes],
+      outputs,
+      certificates,
+    });
+  },
   transferADA: (receiverAddressList: string[], ADA = 20) => {
     const kuber = new Kuber(faucetWallet.address, faucetWallet.payment.private);
     const req = {
@@ -170,6 +162,31 @@ const kuberService = {
         return {
           address: addr,
           value: `${ADA}A`,
+        };
+      }),
+    };
+    return kuber.signAndSubmitTx(req);
+  },
+
+  multipleTransferADA: (outputs: { address: string; value: string }[]) => {
+    const kuber = new Kuber(faucetWallet.address, faucetWallet.payment.private);
+    const req = {
+      outputs,
+    };
+    return kuber.signAndSubmitTx(req);
+  },
+
+  multipleDRepRegistration: (wallets: StaticWallet[]) => {
+    const kuber = new Kuber(faucetWallet.address, faucetWallet.payment.private);
+    const req = {
+      certificates: wallets.map((wallet) =>
+        Kuber.generateCert("registerdrep", wallet.stake.pkh)
+      ),
+      selections: wallets.map((wallet) => {
+        return {
+          type: "PaymentSigningKeyShelley_ed25519",
+          description: "Stake Signing Key",
+          cborHex: `5820${wallet.stake.private}`,
         };
       }),
     };
@@ -190,12 +207,11 @@ const kuberService = {
     };
     return kuber.signAndSubmitTx(req);
   },
-
   dRepDeRegistration: (
     addr: string,
     signingKey: string,
     stakePrivateKey: string,
-    pkh: string,
+    pkh: string
   ) => {
     const kuber = new Kuber(addr, signingKey);
     const selections = [
@@ -218,7 +234,7 @@ const kuberService = {
     signingKey: string,
     stakePrivateKey: string,
     pkh: string,
-    dRep: string | "abstain" | "noconfidence",
+    dRep: string | "abstain" | "noconfidence"
   ) => {
     const kuber = new Kuber(addr, signingKey);
     const selections = [
@@ -245,7 +261,7 @@ const kuberService = {
     const utxos: any[] = await callKuber(`/api/v3/utxo?address=${addr}`);
     const balanceInLovelace = utxos.reduce(
       (acc, utxo) => acc + utxo.value.lovelace,
-      0,
+      0
     );
     return balanceInLovelace / 1000000;
   },
@@ -254,7 +270,7 @@ const kuberService = {
     stakePrivateKey: string,
     pkh: string,
     signingKey: string,
-    addr: string,
+    addr: string
   ) => {
     const kuber = new Kuber(addr, signingKey);
     const selections = [
@@ -315,7 +331,7 @@ const kuberService = {
     signingKey: string,
     voter: string, // dRepHash
     dRepStakePrivKey: string,
-    proposal: string,
+    proposal: string
   ) {
     const kuber = new Kuber(addr, signingKey);
     const req = {
@@ -343,7 +359,7 @@ const kuberService = {
 
   abstainDelegations(
     stakePrivKeys: string[],
-    stakePkhs: string[],
+    stakePkhs: string[]
   ): Promise<TxSubmitResponse> {
     const kuber = new Kuber(faucetWallet.address, faucetWallet.payment.private);
     const selections = stakePrivKeys.map((key) => {
@@ -372,7 +388,7 @@ async function callKuber(
   path: any,
   method: "GET" | "POST" = "GET",
   body?: BodyInit,
-  contentType = "application/json",
+  contentType = "application/json"
 ) {
   const url = config.apiUrl + path;
 
@@ -405,7 +421,7 @@ async function callKuber(
             err = Error(
               `KuberApi [Status ${res.status}] : ${
                 json.message ? json.message : txt
-              }`,
+              }`
             );
           } else {
             err = Error(`KuberApi [Status ${res.status}] : ${txt}`);

@@ -1,17 +1,22 @@
 import createWallet from "@fixtures/createWallet";
 import { test } from "@fixtures/walletExtension";
+import { setAllureEpic } from "@helpers/allure";
 import convertBufferToHex from "@helpers/convertBufferToHex";
 import { ShelleyWallet } from "@helpers/crypto";
 import LoginPage from "@pages/loginPage";
 import { expect } from "@playwright/test";
 
-test("1A. Should connect wallet and choose stake-key to use @smoke @fast", async ({
+test.beforeEach(async () => {
+  await setAllureEpic("1. Wallet connect");
+});
+
+test("1A. Should connect wallet and choose stake-key to use", async ({
   page,
 }) => {
   const shellyWallet = await ShelleyWallet.generate();
   const extraPubStakeKey = convertBufferToHex(shellyWallet.stakeKey.public);
   const extraRewardAddress = convertBufferToHex(
-    shellyWallet.rewardAddressRawBytes(0),
+    shellyWallet.rewardAddressRawBytes(0)
   );
 
   await createWallet(page, {
@@ -23,9 +28,7 @@ test("1A. Should connect wallet and choose stake-key to use @smoke @fast", async
   await loginPage.login();
 });
 
-test("1C: Should disconnect Wallet When connected @smoke @fast", async ({
-  page,
-}) => {
+test("1C: Should disconnect Wallet When connected", async ({ page }) => {
   await createWallet(page);
 
   const loginPage = new LoginPage(page);
@@ -34,23 +37,20 @@ test("1C: Should disconnect Wallet When connected @smoke @fast", async ({
   await loginPage.logout();
 });
 
-test("1D. Should check correct network (Testnet/Mainnet) on connection @smoke @fast", async ({
-  page,
-}) => {
+test("1D. Should reject wallet connection in mainnet", async ({ page }) => {
   const wrongNetworkId = 1; // mainnet network
   await createWallet(page, {
     networkId: wrongNetworkId,
   });
 
-  const errors: Array<Error> = [];
-  page.on("pageerror", (error) => {
-    errors.push(error);
-  });
+  await page.goto("/");
 
-  const loginPage = new LoginPage(page);
-  await loginPage.login();
+  await page.getByTestId("connect-wallet-button").click();
+  await page.getByTestId("demos-wallet-button").click();
 
-  expect(errors).not.toHaveLength(0);
+  await expect(page.getByTestId("wallet-connection-error-modal")).toHaveText(
+    /You are trying to connect/
+  );
 });
 
 test("1E. Should hide incompatible wallets when connecting", async ({
