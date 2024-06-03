@@ -45,12 +45,17 @@ export default defineConfig({
       testMatch: "**/auth.setup.ts",
     },
     {
+      name: "faucet setup",
+      testMatch: "**/faucet.setup.ts",
+    },
+    {
       name: "dRep setup",
       testMatch: "**/dRep.setup.ts",
     },
     {
       name: "wallet bootstrap",
       testMatch: "**/wallet.bootstrap.ts",
+      dependencies: !environments.ci ? ["faucet setup"] : [],
     },
     {
       name: "transaction",
