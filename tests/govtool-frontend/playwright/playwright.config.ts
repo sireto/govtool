@@ -11,7 +11,6 @@ import environments from "lib/constants/environments";
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
-  globalSetup: environments.ci ? require.resolve("./global-setup.ts") : "",
   testDir: "./tests",
   /* Run tests in files in parallel */
   fullyParallel: true,
