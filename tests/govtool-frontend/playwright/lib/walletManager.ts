@@ -25,7 +25,7 @@ class WalletManager {
     return WalletManager.instance;
   }
 
-  async writeWallets(wallets: StaticWallet[], purpose: Purpose) {
+  async writeWallets(wallets: StaticWallet[], purpose: Purpose | string) {
     await new Promise<void>((resolve, reject) =>
       fs.writeFile(
         `${baseFilePath}/${purpose}Wallets.json`,

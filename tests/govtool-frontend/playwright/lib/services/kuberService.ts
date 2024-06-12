@@ -192,7 +192,6 @@ const kuberService = {
     };
     return kuber.signAndSubmitTx(req);
   },
-
   dRepRegistration: (stakeSigningKey: string, pkh: string) => {
     const kuber = new Kuber(faucetWallet.address, faucetWallet.payment.private);
     const req = {
@@ -204,6 +203,22 @@ const kuberService = {
           cborHex: `5820${stakeSigningKey}`,
         },
       ],
+    };
+    return kuber.signAndSubmitTx(req);
+  },
+  multipleDRepDeRegistration: (wallets: StaticWallet[]) => {
+    const kuber = new Kuber(faucetWallet.address, faucetWallet.payment.private);
+    const req = {
+      certificates: wallets.map((wallet) =>
+        Kuber.generateCert("deregisterdrep", wallet.stake.pkh)
+      ),
+      selections: wallets.map((wallet) => {
+        return {
+          type: "PaymentSigningKeyShelley_ed25519",
+          description: "Stake Signing Key",
+          cborHex: `5820${wallet.stake.private}`,
+        };
+      }),
     };
     return kuber.signAndSubmitTx(req);
   },
