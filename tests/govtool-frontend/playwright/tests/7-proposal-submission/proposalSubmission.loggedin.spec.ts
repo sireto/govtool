@@ -164,8 +164,8 @@ test("7L. Should reject invalid proposal metadata", async ({ page }) => {
   await proposalSubmissionPage.metadataUrlInput.fill(invalidMetadataAnchor);
   await proposalSubmissionPage.continueBtn.click();
 
-  await expect(proposalSubmissionPage.registrationErrorModal).not.toHaveText(
-    /utxo balance insufficient/i
+  await expect(proposalSubmissionPage.metadataErrorModal).not.toHaveText(
+    /your external data does not/i
   );
 });
 
@@ -219,8 +219,6 @@ test.describe("Edit proposal form", () => {
 test("7K_1. Should accept valid metadata anchor on proposal submission", async ({
   page,
 }) => {
-  const invalidMetadataAnchor = "https://www.google.com";
-
   const proposalSubmissionPage = new ProposalSubmissionPage(page);
   await proposalSubmissionPage.goto();
   ``;
@@ -245,8 +243,6 @@ test("7K_1. Should accept valid metadata anchor on proposal submission", async (
 test("7K_2. Should reject invalid metadata anchor on proposal submission", async ({
   page,
 }) => {
-  const invalidMetadataAnchor = "https://www.google.com";
-
   const proposalSubmissionPage = new ProposalSubmissionPage(page);
   await proposalSubmissionPage.goto();
   ``;
