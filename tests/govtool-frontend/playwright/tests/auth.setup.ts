@@ -128,16 +128,16 @@ setup("Create AdaHolder 06 auth", async ({ page, context }) => {
   await context.storageState({ path: adaHolder06AuthFile });
 });
 
-setup("Create Proposal 01 auth", async ({ page, context }) => {
-  await importWallet(page, proposal01Wallet);
+// setup("Create Proposal 01 auth", async ({ page, context }) => {
+//   await importWallet(page, proposal01Wallet);
 
-  const loginPage = new LoginPage(page);
-  await loginPage.login();
-  await loginPage.isLoggedIn();
+//   const loginPage = new LoginPage(page);
+//   await loginPage.login();
+//   await loginPage.isLoggedIn();
 
-  const proposalDiscussionPage = new ProposalDiscussionPage(page);
-  await proposalDiscussionPage.goto();
-  await proposalDiscussionPage.setUsername(faker.internet.userName());
+//   const proposalDiscussionPage = new ProposalDiscussionPage(page);
+//   await proposalDiscussionPage.goto();
+//   await proposalDiscussionPage.setUsername(faker.internet.userName());
 
-  await context.storageState({ path: proposal01AuthFile });
-});
+//   await context.storageState({ path: proposal01AuthFile });
+// });
