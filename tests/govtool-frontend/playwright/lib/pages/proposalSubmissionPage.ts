@@ -26,6 +26,8 @@ export default class ProposalSubmissionPage {
     "create-governance-action-error-modal"
   );
 
+  readonly metadataErrorModal = this.page.getByTestId("modal");
+
   // buttons
   readonly registerBtn = this.page.getByTestId("register-button");
   readonly skipBtn = this.page.getByTestId("skip-button");
