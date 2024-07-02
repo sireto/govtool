@@ -278,5 +278,7 @@ test("7K_2. Should reject invalid metadata anchor on proposal submission", async
     metadataAnchorGreaterThan128Bytes
   );
 
-  await expect(page.getByTestId("invalid-url-error")).toBeVisible();
+  await expect(
+    page.getByTestId("url-must-be-less-than-128-bytes-error")
+  ).toBeVisible();
 });
