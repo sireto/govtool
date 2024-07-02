@@ -15,13 +15,8 @@ test("2B. Should access DRep Directory page", async ({ page }) => {
   await page.goto("/");
 
   await page.getByTestId("view-drep-directory-button").click();
-  if (isMobile(page)) {
-    await expect(page.getByText("DRep Directory")).toBeVisible();
-  } else {
-    await expect(
-      page.getByRole("navigation").getByText("DRep Directory")
-    ).toBeVisible();
-  }
+
+  await expect(page.getByText("DRep Directory")).toHaveCount(2);
 });
 
 test("2D. Should show delegation options in connected state", async ({
