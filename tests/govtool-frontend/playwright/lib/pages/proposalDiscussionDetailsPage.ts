@@ -10,10 +10,7 @@ export default class ProposalDiscussionDetailsPage {
   readonly dislikeBtn = this.page.getByRole("button", {
     name: "proposal dislikes",
   });
-  readonly commentBtn = this.page.getByRole("button", {
-    name: "Comment",
-    exact: true,
-  }); // this.page.getByTestId("comment-button");
+  readonly commentBtn = this.page.getByTestId("comment-button");
   readonly addPollBtn = this.page.getByRole("button", { name: "Add Poll" }); // BUG missing test id
   readonly SubmitBtn = this.page.getByTestId("submit-button");
   readonly menuBtn = this.page.getByTestId("menu-button");
