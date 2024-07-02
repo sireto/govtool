@@ -1,3 +1,4 @@
+import environments from "@constants/environments";
 import { faker } from "@faker-js/faker";
 import { test } from "@fixtures/proposal";
 import { setAllureEpic } from "@helpers/allure";
@@ -113,7 +114,7 @@ test.describe("Mocked proposal", () => {
     );
 
     proposalDiscussionDetailsPage = new ProposalDiscussionDetailsPage(page);
-    await proposalDiscussionDetailsPage.goto(10);
+    await proposalDiscussionDetailsPage.goto(mockProposal.data.id);
   });
 
   test("8E. Should share proposed governance action", async ({
@@ -122,12 +123,19 @@ test.describe("Mocked proposal", () => {
   }) => {
     await context.grantPermissions(["clipboard-read", "clipboard-write"]);
 
-    await page.getByTestId("share-button").click();
-    await expect(page.getByText("Copied to clipboard")).toBeVisible();
+    await page.locator("#share-button").click(); // BUG
+    // Copy button
+    await page.getByRole("button").click(); // BUG
+
+    await expect(page.getByText("Link copied")).toBeVisible(); // Bug
     const copiedTextDRepDirectory = await page.evaluate(() =>
       navigator.clipboard.readText()
     );
-    expect(copiedTextDRepDirectory).toEqual(mockProposal.data.id);
+
+    const expectedCopyUrl =
+      environments.frontendUrl + "/proposal_discussion/" + mockProposal.data.id;
+
+    expect(copiedTextDRepDirectory).toEqual(expectedCopyUrl);
   });
 
   test("8I. Should disable poll voting functionality.", async () => {
