@@ -98,7 +98,7 @@ test.describe("Proposal submission check", () => {
       await proposalSubmissionPage.register({ ...proposal });
       await expect(
         proposalSubmissionPage.registrationErrorModal.getByText(
-          "UTxO Balance Insufficient"
+          /insufficient balance/i
         )
       ).toBeVisible();
     });
@@ -166,8 +166,8 @@ test("7L. Should reject invalid proposal metadata", async ({ page }) => {
   await proposalSubmissionPage.metadataUrlInput.fill(invalidMetadataAnchor);
   await proposalSubmissionPage.continueBtn.click();
 
-  await expect(proposalSubmissionPage.registrationErrorModal).not.toHaveText(
-    /utxo balance insufficient/i
+  await expect(page.getByTestId("modal")).toHaveText(
+    /your external data does not/i
   );
 });
 
