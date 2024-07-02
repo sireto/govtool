@@ -7,7 +7,6 @@ import { invalid } from "@mock/index";
 import ProposalSubmissionPage from "@pages/proposalSubmissionPage";
 import { expect } from "@playwright/test";
 import { IProposalForm, ProposalType } from "@types";
-import { bech32 } from "bech32";
 
 test.use({ storageState: ".auth/user01.json", wallet: user01Wallet });
 
@@ -30,12 +29,14 @@ test.describe("Accept valid data", () => {
       await proposalSubmissionPage.continueBtn.click();
 
       for (let i = 0; i < 100; i++) {
-        const randomBytes = new Uint8Array(10);
-        const bech32Address = bech32.encode("addr_test", randomBytes);
+        const rewardAddressBech32 = (
+          await ShelleyWallet.generate()
+        ).rewardAddressBech32(0);
+
         const formFields: IProposalForm =
           proposalSubmissionPage.generateValidProposalFormFields(
             type,
-            bech32Address
+            rewardAddressBech32
           );
         await proposalSubmissionPage.validateForm(formFields);
       }
@@ -116,13 +117,14 @@ test.describe("Review fillup form", () => {
       await page.getByTestId(`${type}-radio`).click();
       await proposalSubmissionPage.continueBtn.click();
 
-      const randomBytes = new Uint8Array(10);
-      const bech32Address = bech32.encode("addr_test", randomBytes);
+      const rewardAddressBech32 = (
+        await ShelleyWallet.generate()
+      ).rewardAddressBech32(0);
 
       const formFields: IProposalForm =
         proposalSubmissionPage.generateValidProposalFormFields(
           type,
-          bech32Address
+          rewardAddressBech32
         );
       await proposalSubmissionPage.validateForm(formFields);
       proposalSubmissionPage.continueBtn.click();
@@ -181,13 +183,14 @@ test.describe("Edit proposal form", () => {
       await page.getByTestId(`${type}-radio`).click();
       await proposalSubmissionPage.continueBtn.click();
 
-      const randomBytes = new Uint8Array(10);
-      const bech32Address = bech32.encode("addr_test", randomBytes);
+      const rewardAddressBech32 = (
+        await ShelleyWallet.generate()
+      ).rewardAddressBech32(0);
 
       const formFields: IProposalForm =
         proposalSubmissionPage.generateValidProposalFormFields(
           type,
-          bech32Address
+          rewardAddressBech32
         );
       await proposalSubmissionPage.validateForm(formFields);
       proposalSubmissionPage.continueBtn.click();
