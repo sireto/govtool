@@ -21,7 +21,7 @@ test("8A. Should access proposed governance actions in disconnected state", asyn
   const proposalDiscussionPage = new ProposalDiscussionPage(page);
   await proposalDiscussionPage.goto();
 
-  await expect(page.getByText(/Proposed Governance Actions/i)).toHaveCount(2);
+  await expect(page.getByText(/Proposed Governance Actions/i)).toHaveCount(1);
 });
 
 test("8B. Should filter and sort the list of proposed governance actions.", async ({
