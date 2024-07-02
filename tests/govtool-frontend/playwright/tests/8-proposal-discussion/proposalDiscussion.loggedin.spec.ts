@@ -2,11 +2,16 @@ import { proposal01Wallet, user01Wallet } from "@constants/staticWallets";
 import { createTempUserAuth } from "@datafactory/createAuth";
 import { faker } from "@faker-js/faker";
 import { test } from "@fixtures/proposal";
+import { setAllureEpic } from "@helpers/allure";
 import { ShelleyWallet } from "@helpers/crypto";
 import { createNewPageWithWallet } from "@helpers/page";
 import ProposalDiscussionDetailsPage from "@pages/proposalDiscussionDetailsPage";
 import ProposalDiscussionPage from "@pages/proposalDiscussionPage";
 import { Page, expect } from "@playwright/test";
+
+test.beforeEach(() => {
+  setAllureEpic("8. Proposal Discussion Forum");
+});
 
 test.describe("Proposal created logged in state", () => {
   test.use({
