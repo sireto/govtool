@@ -9,6 +9,7 @@ import { expect } from "@playwright/test";
 const mockProposal = require("../../lib/_mock/proposal.json");
 const mockPoll = require("../../lib/_mock/proposalPoll.json");
 const mockComments = require("../../lib/_mock/proposalComments.json");
+const mockInfoProposedGAResponses = require("../../lib/_mock/infoProposedGA.json");
 
 test.beforeEach(() => {
   setAllureEpic("Proposal Discussion Forum");
@@ -56,12 +57,22 @@ test("8C. Should search the list of proposed governance actions.", async ({
 test("8D.Should show the view-all categorized proposed governance actions.", async ({
   page,
 }) => {
+  await page.route("**/api/proposals?**", async (route) =>
+    route.fulfill({
+      body: JSON.stringify(mockInfoProposedGAResponses),
+    })
+  );
+
   const proposalDiscussionPage = new ProposalDiscussionPage(page);
   await proposalDiscussionPage.goto();
 
   await proposalDiscussionPage.showAllBtn.click();
 
-  await expect(proposalDiscussionPage.showLessBtn).toBeVisible();
+  const proposalCards = await proposalDiscussionPage.getAllProposals();
+
+  for (const proposalCard of proposalCards) {
+    await expect(proposalCard.getByText("Info", { exact: true })).toBeVisible();
+  }
 });
 
 test("8H. Should disable proposal interaction on a disconnected state.", async ({

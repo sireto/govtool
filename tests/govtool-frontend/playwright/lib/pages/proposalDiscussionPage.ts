@@ -1,7 +1,7 @@
 import { faker } from "@faker-js/faker";
 import { generateWalletAddress } from "@helpers/cardano";
 import { extractProposalIdFromUrl } from "@helpers/string";
-import { Page } from "@playwright/test";
+import { Locator, Page } from "@playwright/test";
 import { ProposalCreateRequest } from "@services/proposalDiscussion/types";
 import environments from "lib/constants/environments";
 import ProposalDiscussionDetailsPage from "./proposalDiscussionDetailsPage";
@@ -44,7 +44,7 @@ export default class ProposalDiscussionPage {
 
   async viewFirstProposal(): Promise<ProposalDiscussionDetailsPage> {
     await this.page
-      .locator('[data-testid^="govaction-"][data-testid$="-view-detail"]')
+      .locator('[data-testid^="proposal-"][data-testid$="-view-details"]')
       .first()
       .click();
     return new ProposalDiscussionDetailsPage(this.page);
@@ -52,7 +52,23 @@ export default class ProposalDiscussionPage {
 
   async getAllProposals() {
     await this.page.waitForTimeout(2_000);
-    return this.page.locator('[data-testid$="-card"]').all(); // BUG
+    // Select all elements with data-testid attribute
+    const elements = await this.page.$$("[data-testid]");
+
+    // Regex pattern to match IDs starting with "proposal" and ending with numbers
+    const pattern = /^proposal-\d+$/;
+
+    // Extract the data-testid attributes
+    const proposalCards: Locator[] = [];
+    for (const element of elements) {
+      const dataTestId = await element.getAttribute("data-testid");
+      if (pattern.test(dataTestId)) {
+        proposalCards.push(this.page.getByTestId(dataTestId));
+      }
+    }
+
+    return proposalCards;
+    // BUG return this.page.locator('[data-testid$="-card"]').all();
   }
 
   async setUsername(name: string) {
