@@ -80,6 +80,7 @@ jobs:
       KUBER_API_KEY: ${{secrets.KUBER_API_KEY}}
       TEST_WORKERS: ${{vars.TEST_WORKERS}}
       CI: ${{vars.CI}}
+      NETWORK: ${{vars.NETWORK}}
       CARDANOAPI_METADATA_URL: ${{vars.CARDANOAPI_METADATA_URL}}
 
   publish-report:
