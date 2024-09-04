@@ -14,13 +14,21 @@ const environments = {
   networkId: parseInt(process.env.NETWORK_ID) || 0,
   faucet: {
     apiUrl:
-      process.env.FAUCET_API_URL ||
-      "https://faucet.sanchonet.world.dev.cardano.org",
+      process.env.FAUCET_API_URL.replace("sanchonet", process.env.NETWORK) ||
+      "https://faucet.sanchonet.world.dev.cardano.org".replace(
+        "sanchonet",
+        process.env.NETWORK
+      ),
     apiKey: process.env.FAUCET_API_KEY || "",
     address: process.env.FAUCET_ADDRESS || "addr_test1vz0ua2vyk7r4vufmpqh5v44awg8xff26hxlwyrt3uc67maqtql3kl",
   },
   kuber: {
-    apiUrl: process.env.KUBER_API_URL || "https://kuber-govtool.cardanoapi.io",
+    apiUrl:
+      process.env.KUBER_API_URL.replace("sanchonet", process.env.NETWORK) ||
+      "https://sanchonet.kuber.cardanoapi.io".replace(
+        "sanchonet",
+        process.env.NETWORK
+      ),
     apiKey: process.env.KUBER_API_KEY || "",
   },
   txTimeOut: parseInt(process.env.TX_TIMEOUT) || 240000,

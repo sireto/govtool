@@ -17,7 +17,7 @@ export default defineConfig({
   /**TODO: Remove this timeout *
    * It has been intentionally used to slow loading of govtool.
    */
-  timeout: 90_000,
+  timeout: process.env.NETWORK === "preview" ? 180_000:90_000,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!environments.ci,
   /* Retry on CI only */
