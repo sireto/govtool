@@ -14,6 +14,7 @@ on:
           - "sanchogov.tools"
           - "staging.govtool.byron.network"
           - "govtool.cardanoapi.io"
+          - "preview.gov.tools"
 
   workflow_run:
     workflows: ["Build and deploy GovTool to TEST server"]
