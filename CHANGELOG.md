@@ -16,11 +16,13 @@ changes.
 
 ### Fixed
 
--
+- Fix submitting treasury governance action [Issue 1845](https://github.com/IntersectMBO/govtool/issues/1845)
+- Fix failing github action workflow [Issue 2277](https://github.com/IntersectMBO/govtool/issues/2277)
 
 ### Changed
 
--
+- Bumped Cardano node version to `10.1.0-pre`.
+- Bumped Cardano DB Sync version to `13.6.0.0-pre`.
 
 ### Removed
 
