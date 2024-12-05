@@ -60,10 +60,8 @@ export default class ProposalSubmissionPage {
   readonly metadataUrlInput = this.page.getByTestId("url-input");
   readonly motivationInput = this.page.getByTestId("motivation-input");
   readonly rationaleInput = this.page.getByTestId("rationale-input");
-  readonly receivingAddressInput = this.page.getByTestId(
-    "receiving-address-input"
-  );
-  readonly amountInput = this.page.getByTestId("amount-input");
+  readonly receivingAddressInput = this.page.getByText('Receiving stake address 1 *').first(); //BUG Incorrect testId
+  readonly amountInput = this.page.getByText('Amount 1 *').first(); //BUG Incorrect testId
   readonly closeDraftSuccessModalBtn = this.page.getByTestId("close-button");
 
   constructor(private readonly page: Page) {}
