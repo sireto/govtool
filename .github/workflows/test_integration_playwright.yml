@@ -15,6 +15,7 @@ on:
           - "staging.govtool.byron.network"
           - "govtool.cardanoapi.io"
           - "preview.gov.tools"
+          - "govtool-mirror.cardanoapi.io"
 
   workflow_run:
     workflows: ["Build and deploy GovTool to TEST server"]
