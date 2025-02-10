@@ -19,7 +19,9 @@ export default class GovernanceActionsPage {
 
   async goto() {
     await this.page.goto(`${environments.frontendUrl}/governance_actions`);
-    await this.page.waitForTimeout(2_000); // Waits to ensure the alert-success popup does not interfere
+    await expect(
+      this.page.getByRole("progressbar").getByRole("img").last()
+    ).toBeHidden({ timeout: 20_000 });
   }
 
   async viewProposal(
@@ -27,6 +29,10 @@ export default class GovernanceActionsPage {
   ): Promise<GovernanceActionDetailsPage> {
     const proposalId = `govaction-${proposal.txHash}#${proposal.index}-view-detail`;
     await this.page.getByTestId(proposalId).click();
+
+    await expect(
+      this.page.getByRole("progressbar").getByRole("img").last()
+    ).toBeHidden({ timeout: 20_000 });
 
     return new GovernanceActionDetailsPage(this.page);
   }
@@ -36,6 +42,10 @@ export default class GovernanceActionsPage {
       .locator('[data-testid^="govaction-"][data-testid$="-view-detail"]')
       .first()
       .click();
+
+    await expect(
+      this.page.getByRole("progressbar").getByRole("img").last()
+    ).toBeHidden({ timeout: 20_000 });
     return new GovernanceActionDetailsPage(this.page);
   }
 
@@ -44,6 +54,10 @@ export default class GovernanceActionsPage {
       .locator('[data-testid^="govaction-"][data-testid$="-change-your-vote"]')
       .first()
       .click();
+
+    await expect(
+      this.page.getByRole("progressbar").getByRole("img").last()
+    ).toBeHidden({ timeout: 20_000 });
     return new GovernanceActionDetailsPage(this.page);
   }
 
@@ -62,6 +76,10 @@ export default class GovernanceActionsPage {
         .first()
         .click();
 
+      await expect(
+        this.page.getByRole("progressbar").getByRole("img").last()
+      ).toBeHidden({ timeout: 20_000 });
+
       return new GovernanceActionDetailsPage(this.page);
     } else {
       console.warn(
@@ -76,6 +94,10 @@ export default class GovernanceActionsPage {
   ): Promise<GovernanceActionDetailsPage> {
     const proposalId = `govaction-${proposal.txHash}#${proposal.index}-change-your-vote`;
     await this.page.getByTestId(proposalId).click();
+
+    await expect(
+      this.page.getByRole("progressbar").getByRole("img").last()
+    ).toBeHidden({ timeout: 20_000 });
 
     return new GovernanceActionDetailsPage(this.page);
   }
@@ -95,7 +117,9 @@ export default class GovernanceActionsPage {
   }
 
   async getAllProposals() {
-    await this.page.waitForTimeout(4_000); // waits for proposals to render
+    await expect(
+      this.page.getByRole("progressbar").getByRole("img").last()
+    ).toBeHidden({ timeout: 20_000 });
     return this.page.locator('[data-testid$="-card"]').all();
   }
 
