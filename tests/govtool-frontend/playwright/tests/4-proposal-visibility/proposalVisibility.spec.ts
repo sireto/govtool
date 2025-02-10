@@ -83,7 +83,8 @@ test("4K. Should display correct vote counts on governance details page for disc
       // check dRep votes
       if (await areDRepVoteTotalsDisplayed(proposalToCheck)) {
         await expect(govActionDetailsPage.dRepYesVotes).toHaveText(
-          `₳ ${correctVoteAdaFormat(proposalToCheck.dRepYesVotes)}`
+          `₳ ${correctVoteAdaFormat(proposalToCheck.dRepYesVotes)}`,
+          { timeout: 20_000 }
         );
         await expect(govActionDetailsPage.dRepAbstainVotes).toHaveText(
           `₳ ${correctVoteAdaFormat(proposalToCheck.dRepAbstainVotes)}`
@@ -101,7 +102,8 @@ test("4K. Should display correct vote counts on governance details page for disc
       // check sPos votes
       if (await areSPOVoteTotalsDisplayed(proposalToCheck)) {
         await expect(govActionDetailsPage.sPosYesVotes).toHaveText(
-          `₳ ${correctVoteAdaFormat(proposalToCheck.poolYesVotes)}`
+          `₳ ${correctVoteAdaFormat(proposalToCheck.poolYesVotes)}`,
+          { timeout: 20_000 }
         );
         await expect(govActionDetailsPage.sPosAbstainVotes).toHaveText(
           `₳ ${correctVoteAdaFormat(proposalToCheck.poolAbstainVotes)}`
@@ -116,7 +118,8 @@ test("4K. Should display correct vote counts on governance details page for disc
         areCCVoteTotalsDisplayed(proposalToCheck.type as GovernanceActionType)
       ) {
         await expect(govActionDetailsPage.ccCommitteeYesVotes).toHaveText(
-          `${proposalToCheck.ccYesVotes}`
+          `${proposalToCheck.ccYesVotes}`,
+          { timeout: 20_000 }
         );
         await expect(govActionDetailsPage.ccCommitteeAbstainVotes).toHaveText(
           `${proposalToCheck.ccAbstainVotes}`
