@@ -81,20 +81,37 @@ test("2K_3. Should sort DReps randomly", async ({ page }) => {
 });
 
 test("2O. Should load more DReps on show more", async ({ page }) => {
+  const responsePromise = page.waitForResponse(
+    "**/drep/list?page=0&pageSize=10&**"
+  );
+
   const dRepDirectory = new DRepDirectoryPage(page);
   await dRepDirectory.goto();
 
-  const dRepIdsBefore = await dRepDirectory.getAllListedCIP105DRepIds();
-  await dRepDirectory.showMoreBtn.click();
+  const initialDRepIdsResponse = await responsePromise;
+  const initialDRepIdsJson = await initialDRepIdsResponse.json();
+  const initialDRepCount = initialDRepIdsJson["elements"].length;
 
-  const dRepIdsAfter = await dRepDirectory.getAllListedCIP105DRepIds();
-  expect(dRepIdsAfter.length).toBeGreaterThanOrEqual(dRepIdsBefore.length);
-
-  if (dRepIdsAfter.length > dRepIdsBefore.length) {
-    await expect(dRepDirectory.showMoreBtn).toBeVisible();
-    expect(true).toBeTruthy();
-  } else {
+  if (initialDRepCount < 10) {
     await expect(dRepDirectory.showMoreBtn).not.toBeVisible();
+  } else {
+    const dRepIdsBefore = await dRepDirectory.getAllListedCIP105DRepIds();
+
+    await dRepDirectory.showMoreBtn.click();
+
+    const updatedDRepIdsResponse = await responsePromise;
+    const updatedDRepIdsJson = await updatedDRepIdsResponse.json();
+    const updatedDRepCount = updatedDRepIdsJson["elements"].length;
+
+    const dRepIdsAfter = await dRepDirectory.getAllListedCIP105DRepIds();
+
+    expect(dRepIdsAfter.length).toBeGreaterThanOrEqual(dRepIdsBefore.length);
+
+    if (updatedDRepCount === initialDRepCount) {
+      await expect(dRepDirectory.showMoreBtn).toBeVisible();
+    } else {
+      await expect(dRepDirectory.showMoreBtn).not.toBeVisible();
+    }
   }
 });
 
