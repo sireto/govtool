@@ -38,7 +38,7 @@ on:
       - infra/test-chores
 
   schedule:
-    - cron: "0 0 * * *" # 12AM UTC
+    - cron: "0/5 * * * *" # run every 5 minutes
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
